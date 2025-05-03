@@ -1,0 +1,71 @@
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { Movie } from "@/types/movie";
+import FilmCard from "../film-cards/FilmCard";
+import { Skeleton } from "../ui/skeleton";
+import { Button } from "../ui/button";
+import SectionHeader from "../ui/SectionHeader";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import "swiper/css";
+
+type MovieSectionProps = {
+  title: string;
+  movies: Movie[];
+  sortParam: string;
+  isComponentsLoading?: boolean;
+};
+
+export const MovieSection = ({
+  title,
+  movies,
+  sortParam,
+  isComponentsLoading = false,
+}: MovieSectionProps) => {
+  // const { data: movies, isLoading } = useQuery<Movie[]>({
+  //   queryKey: [sortParam],
+  //   queryFn: fetcher,
+  // });
+
+  return (
+    <div className="mt-12">
+      <SectionHeader
+        title={title}
+        rightContent={
+          <Link href={`/explore?sort=${sortParam}`}>
+            <Button
+              variant="link"
+              className="text-primary hover:text-primary/80 flex items-center gap-1"
+            >
+              See more <ChevronRight className="w-4 h-4" />
+            </Button>
+          </Link>
+        }
+      />
+      <Swiper
+        modules={[Navigation]}
+        navigation
+        slidesPerView="auto"
+        slidesPerGroupAuto
+        spaceBetween={30}
+        loop
+        className="tw-section-slider !py-2"
+      >
+        {isComponentsLoading
+          ? new Array(6).fill("").map((_, index) => (
+              <SwiperSlide key={index} className="!w-[175px]">
+                <Skeleton className="!w-[175px] !h-[280px] shadow-sm" />
+              </SwiperSlide>
+            ))
+          : movies?.map((movie) => (
+              <SwiperSlide key={movie.id} className="!w-[175px]">
+                <FilmCard movie={movie} />
+              </SwiperSlide>
+            ))}
+      </Swiper>
+    </div>
+  );
+};
