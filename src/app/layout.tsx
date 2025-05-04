@@ -17,10 +17,8 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <NextTopLoaderClient />
-        {/* <Providers> */}
           {children}
           <Toaster />
-        {/* </Providers> */}
       </body>
     </html>
   );

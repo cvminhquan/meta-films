@@ -15,7 +15,7 @@ export const WatchPlayer = ({ id, type, season, episode }: WatchPlayerProps) => 
   useEffect(() => {
     const baseUrl =
       type === "movie"
-        ? process.env.NEXT_PUBLIC_EMBED_URL
+      ? process.env.NEXT_PUBLIC_EMBED_URL
         : process.env.NEXT_PUBLIC_EMBED_TV_URL;
 
     setEmbedUrl(`${baseUrl}/${id}&s=${season}&e=${episode}`);

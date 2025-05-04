@@ -8,6 +8,7 @@ import SearchBar from "@/components/searchbar/searchbar";
 import { Movie } from "@/types/movie";
 import { ChevronDown } from "lucide-react";
 import { fetchExploreList } from "@/libs/tmdb";
+import { useGenres } from "@/components/provider/genre-context/genre-context";
 
 const genres = [
   "Action",
@@ -31,6 +32,9 @@ export default function ExploreContent() {
   const [maxRuntime, setMaxRuntime] = useState(200);
   const [dateFrom, setDateFrom] = useState("2000-01-01");
   const [dateTo, setDateTo] = useState("2025-01-01");
+
+  // const genreMap = useGenres();
+  // console.log("genreMap", genreMap);
 
   const { data: movies = [], isLoading } = useQuery<Movie[]>({
     queryKey: [
@@ -77,11 +81,11 @@ export default function ExploreContent() {
         ))}
       </div>
 
-      <div className="relative">
+      {/* <div className="relative">
         <div className="md:w-[300px] mb-6">
           <SearchBar placeholder="Search..." className="relative shadow-none" />
         </div>
-      </div>
+      </div> */}
 
       <div className="flex flex-col md:flex-row">
         <div className="md:flex-grow">

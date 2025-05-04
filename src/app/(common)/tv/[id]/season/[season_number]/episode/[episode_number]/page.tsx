@@ -10,7 +10,7 @@ type Props = {
   };
 };
 
-export default async function EpisodeDetailPage({ params }: Props) {
+export default async function EpisodeDetailPage({ params }: any) {
   const tvId = Number(params.id);
   const seasonNumber = Number(params.season_number);
   const episodeNumber = Number(params.episode_number);

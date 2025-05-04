@@ -1,34 +1,32 @@
 "use client";
+
 import { useGenres } from "@/components/provider/genre-context/genre-context";
 import { SeasonBrowser } from "@/components/season-browser";
+import { getRealEpisodeCount } from "@/libs/embed";
 import { getSeasonDetail, getSimilarTV, getTVDetail } from "@/libs/tmdb";
 import { useQuery } from "@tanstack/react-query";
 import { Heart, MoreVertical, Play, Share } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
-type Params = {
+interface Params {
   id: string;
-};
+}
+
 export default function TVDetailPage({ params }: { params: Promise<Params> }) {
   const { id } = use(params);
   const parsedId = Number(id);
+
   const { data: movie, isLoading } = useQuery({
-    queryKey: ["movieDetail", id],
-    queryFn: () => getTVDetail(id),
-    staleTime: 1000 * 60 * 10, // cache 10 phút
+    queryKey: ["movieDetail", parsedId],
+    queryFn: () => getTVDetail(parsedId),
+    staleTime: 1000 * 60 * 10,
   });
 
-  console.log("movie", movie);
   const { data: similarMovies = [] } = useQuery({
-    queryKey: ["similarMovies", id],
-    queryFn: () => getSimilarTV(id),
+    queryKey: ["similarMovies", parsedId],
+    queryFn: () => getSimilarTV(parsedId),
     staleTime: 1000 * 60 * 10,
   });
 
@@ -36,11 +34,18 @@ export default function TVDetailPage({ params }: { params: Promise<Params> }) {
   const { data: seasonDetail } = useQuery({
     queryKey: ["seasonDetail", parsedId, activeSeason],
     queryFn: () => getSeasonDetail(parsedId, activeSeason),
-    enabled: !isLoading,
+    enabled: !!parsedId,
     staleTime: 1000 * 60 * 10,
   });
 
-  
+  // const { data: realEpisodeCount } = useQuery({
+  //   queryKey: ["realEpisodeCount", parsedId, activeSeason],
+  //   queryFn: () => getRealEpisodeCount(parsedId, activeSeason),
+  //   enabled: !!parsedId,
+  //   staleTime: 1000 * 60 * 10,
+  // });
+
+  // console.log("realEpisodeCount", realEpisodeCount);
   if (isLoading) {
     return (
       <div className="min-h-[500px] flex items-center justify-center">
@@ -48,7 +53,7 @@ export default function TVDetailPage({ params }: { params: Promise<Params> }) {
       </div>
     );
   }
-  // If movie not found, show error
+
   if (!movie) {
     return (
       <div className="min-h-[500px] flex items-center justify-center">
@@ -69,6 +74,7 @@ export default function TVDetailPage({ params }: { params: Promise<Params> }) {
       </div>
     );
   }
+
   return (
     <>
       <div
@@ -83,7 +89,6 @@ export default function TVDetailPage({ params }: { params: Promise<Params> }) {
               <div className="shrink-0 w-[185px] ml-3 md:ml-0">
                 <div className="relative w-full aspect-[2/3]">
                   <Image
-                    // src={movie.posterPath}
                     src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
                     alt={movie.title || movie.name}
                     title={movie.title || movie.name}
@@ -102,18 +107,17 @@ export default function TVDetailPage({ params }: { params: Promise<Params> }) {
               </div>
 
               <ul className="flex gap-3 flex-wrap md:mt-7 mt-3">
-                {movie.genres?.map((genre: any) => {
-                  return (
-                    <Link
-                      key={genre.id}
-                      href={`/explore?genre=${encodeURIComponent(genre.id)}`}
-                      className="md:px-5 px-3 md:py-2 py-1 rounded-full uppercase font-medium border border-gray-300 md:text-white hover:brightness-75 transition duration-300"
-                    >
-                      {genre.name}
-                    </Link>
-                  );
-                })}
+                {movie.genres?.map((genre: any) => (
+                  <Link
+                    key={genre.id}
+                    href={`/explore?genre=${encodeURIComponent(genre.id)}`}
+                    className="md:px-5 px-3 md:py-2 py-1 rounded-full uppercase font-medium border border-gray-300 md:text-white hover:brightness-75 transition duration-300"
+                  >
+                    {genre.name}
+                  </Link>
+                ))}
               </ul>
+
               {movie.overview && (
                 <>
                   <h4>Overview</h4>
@@ -148,8 +152,9 @@ export default function TVDetailPage({ params }: { params: Promise<Params> }) {
           </div>
         </div>
       </div>
+
       {movie.seasons && movie.seasons.length > 0 && (
-        <SeasonBrowser tvId={movie.id} seasons={movie.seasons} />
+        <SeasonBrowser tvId={parsedId} seasons={movie.seasons} />
       )}
     </>
   );

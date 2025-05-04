@@ -38,8 +38,8 @@ export default function TrendingSlider({
             >
               <Image
                 src={`https://image.tmdb.org/t/p/original${film.backdrop_path}`}
-                alt="Backdrop image"
-                title="Backdrop image"
+                alt={film.title || film.name}
+                title={film.title || film.name}
                 width={1280}
                 height={600}
                 quality={100}
@@ -48,7 +48,7 @@ export default function TrendingSlider({
 
               <div className="absolute top-0 left-0 w-full h-full rounded-lg pointer-events-none tw-black-backdrop group-hover:bg-[#00000026] transition duration-700"></div>
 
-              <div className="hidden md:flex absolute top-[5%] right-[3%] px-3 py-1 rounded-full text-white bg-[#a93df0] items-center gap-1">
+              <div className="hidden md:flex absolute top-[5%] right-[3%] px-3 py-1 rounded-full text-white bg-gradient-to-tl from-indigo-500 to-fuchsia-500 items-center gap-1">
                 <span>{film.vote_average.toFixed(1)}</span>
                 <Star size={14} className="fill-white" />
               </div>

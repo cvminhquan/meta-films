@@ -1,3 +1,3 @@
-import {Topnav} from './topnav'
+import {TopNav} from './topnav'
 
-export {Topnav}
+export { TopNav };

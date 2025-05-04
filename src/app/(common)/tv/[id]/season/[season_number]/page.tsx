@@ -10,7 +10,7 @@ type Props = {
   };
 };
 
-export default async function SeasonDetailPage({ params }: Props) {
+export default async function SeasonDetailPage({ params }: any) {
   const id = Number(params.id);
   const seasonNumber = Number(params.season_number);
 

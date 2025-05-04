@@ -28,7 +28,7 @@ const FilmCard: FC<FilmCardProps> = ({
             className="object-cover group-hover:brightness-75 transition duration-300"
           />
 
-          <div className="absolute top-2 left-2 bg-[#a93df0] text-white rounded-full flex items-center gap-1 px-2 py-1 text-sm">
+          <div className="absolute top-2 left-2 bg-gradient-to-tl from-indigo-500 to-fuchsia-500 text-white rounded-full flex items-center gap-1 px-2 py-1 text-sm">
             <span>
               {typeof vote_average === "number"
                 ? vote_average.toFixed(1)

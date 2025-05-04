@@ -1,21 +1,23 @@
-import { WatchPlayer } from "@/components/watch-player";
+import { WatchPlayerWithServers } from "@/components/watch-player-with-servers/watch-player-with-servers";
+import { getMovieDetail } from "@/libs/tmdb";
 
 type Props = {
   params: {
     id: string;
-    season?: string;
-    episode?: string;
   };
 };
 
-export default function WatchTVPage({ params}: Props) {
-  const id = Number(params.id);
-  const season = params.season ? Number(params.season) : 1;
-  const episode = params.episode ? Number(params.episode) : 1;
+export default async function WatchTVPage({ params }: any) {
+  const parsedId = Number(params.id);
+  
+  const tvDetail = await getMovieDetail(parsedId);
   return (
     <div className="p-4 md:p-8">
-      <h1 className="text-2xl font-bold text-white mb-4">Now Watching</h1>
-      <WatchPlayer id={id} type="movie" season={season} episode={episode} />
+      <h1 className="text-2xl font-bold text-white mb-4">
+        {tvDetail.name || tvDetail.original_title}
+      </h1>
+
+      <WatchPlayerWithServers id={parsedId} type="movie" />
     </div>
   );
 }

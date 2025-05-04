@@ -5,17 +5,17 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import SearchBar from "../searchbar/searchbar";
 import Image from "next/image";
 
-export const Topnav = () => {
+export const TopNav = () => {
   const router = useRouter();
 
   return (
     <div className="flex justify-between items-center px-4 md:px-8 pt-10 pb-4 lg:pb-0 lg:pt-0">
       <div className="flex items-center gap-8">
-        <button onClick={() => router.back()} title="Go back" className="hover:bg-white p-2 rounded-full">
-          <ChevronLeft size={40} className="hover:text-primary transition" />
+        <button onClick={() => router.back()} title="Go back">
+          <ChevronLeft size={24} className="hover:text-white transition" />
         </button>
         <button onClick={() => router.forward()} title="Go forward">
-          <ChevronRight size={40} className="hover:text-primary transition" />
+          <ChevronRight size={24} className="hover:text-white transition" />
         </button>
         <SearchBar className="hidden lg:block" />
       </div>

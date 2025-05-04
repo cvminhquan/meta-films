@@ -35,7 +35,7 @@ export const MovieSection = ({
           <Link href={`/explore?sort=${sortParam}`}>
             <Button
               variant="link"
-              className="text-white hover:text-primary/80 flex items-center gap-1"
+              className="text-white hover:no-underline hover:text-[#a93df0] flex items-center gap-1"
             >
               See more <ChevronRight className="w-4 h-4" />
             </Button>
@@ -53,12 +53,12 @@ export const MovieSection = ({
       >
         {isComponentsLoading
           ? new Array(6).fill("").map((_, index) => (
-              <SwiperSlide key={index} className="!w-[175px]">
-                <Skeleton className="!w-[175px] !h-[280px] shadow-sm" />
+              <SwiperSlide key={index} className="!w-[220px]">
+                <Skeleton className="!w-[220px] !h-[280px] shadow-sm" />
               </SwiperSlide>
             ))
           : movies?.map((movie) => (
-              <SwiperSlide key={movie.id} className="!w-[175px]">
+              <SwiperSlide key={movie.id} className="!w-[220px]">
                 <FilmCard movie={movie} type={type} />
               </SwiperSlide>
             ))}

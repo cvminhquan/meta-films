@@ -5,7 +5,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 type GenreMap = Map<number, string>;
 
-const GenreContext = createContext<GenreMap | null>(null);
+export const GenreContext = createContext<GenreMap | null>(null);
 
 export const useGenres = () => {
   const context = useContext(GenreContext);
