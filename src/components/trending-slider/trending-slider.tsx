@@ -1,13 +1,12 @@
 "use client";
 
 import { Movie } from "@/types/movie";
-import FilmCard from "@/components/film-cards/FilmCard";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation } from "swiper/modules";
-import "swiper/css";
-import Link from "next/link";
-import Image from "next/image";
 import { PlayCircle, Star } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import "swiper/css";
+import { Autoplay, Navigation } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 import { useGenres } from "../provider/genre-context/genre-context";
 
 export default function TrendingSlider({
@@ -49,7 +48,7 @@ export default function TrendingSlider({
 
               <div className="absolute top-0 left-0 w-full h-full rounded-lg pointer-events-none tw-black-backdrop group-hover:bg-[#00000026] transition duration-700"></div>
 
-              <div className="hidden md:flex absolute top-[5%] right-[3%] bg-primary px-3 py-1 rounded-full text-white bg-[#a93df0] items-center gap-1">
+              <div className="hidden md:flex absolute top-[5%] right-[3%] px-3 py-1 rounded-full text-white bg-[#a93df0] items-center gap-1">
                 <span>{film.vote_average.toFixed(1)}</span>
                 <Star size={14} className="fill-white" />
               </div>
@@ -59,7 +58,7 @@ export default function TrendingSlider({
               </div>
 
               <div className="absolute top-1/2 -translate-y-1/2 left-[5%] md:max-w-md max-w-[200px]">
-                <h2 className="md:text-5xl text-xl  text-primary font-black tracking-wide md:tw-multiline-ellipsis-2 tw-multiline-ellipsis-3">
+                <h2 className="md:text-5xl text-xl text-white font-black tracking-wide md:tw-multiline-ellipsis-2 tw-multiline-ellipsis-3">
                   {film.title || film.name}
                 </h2>
                 <div className="flex gap-2 flex-wrap mt-3 text-sm text-white/90">

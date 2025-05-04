@@ -63,7 +63,7 @@ const Sidebar: FC<SidebarProps> = ({ className = "" }) => {
           href="/"
           className={`flex gap-6 items-center ${
             isActiveLink("/")
-              ? "!text-primary border-r-4 border-primary font-medium"
+              ? "!text-white border-r-4 border-white font-medium"
               : "hover:text-white transition duration-300"
           }`}
         >
@@ -74,7 +74,7 @@ const Sidebar: FC<SidebarProps> = ({ className = "" }) => {
           href="/explore"
           className={`flex gap-6 items-center ${
             isActiveLink("/explore")
-              ? "!text-primary border-r-4 border-primary font-medium"
+              ? "!text-white border-r-4 border-white font-medium"
               : "hover:text-white transition duration-300"
           }`}
         >
@@ -85,7 +85,7 @@ const Sidebar: FC<SidebarProps> = ({ className = "" }) => {
           href="/search"
           className={`flex gap-6 items-center ${
             isActiveLink("/search")
-              ? "!text-primary border-r-4 border-primary font-medium"
+              ? "!text-white border-r-4 border-white font-medium"
               : "hover:text-white transition duration-300"
           }`}
         >

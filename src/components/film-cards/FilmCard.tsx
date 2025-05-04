@@ -6,7 +6,7 @@ import type { FC } from "react";
 
 interface FilmCardProps {
   movie: Movie;
-  type?: "movie" | "tv";
+  type?: "movie" | "tv" | "series";
   className?: string;
 }
 
@@ -16,7 +16,6 @@ const FilmCard: FC<FilmCardProps> = ({
   className = "",
 }) => {
   const { id, name, original_title, poster_path, vote_average } = movie;
-  // console.log('movie', movie);
   return (
     <div className={`relative group ${className}`}>
       <Link href={`/${type}/${id}`}>

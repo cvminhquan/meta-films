@@ -13,6 +13,7 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 
 type MovieSectionProps = {
+  type: "movie" | "tv" | "series";
   title: string;
   movies: Movie[];
   sortParam: string;
@@ -20,16 +21,12 @@ type MovieSectionProps = {
 };
 
 export const MovieSection = ({
+  type,
   title,
   movies,
   sortParam,
   isComponentsLoading = false,
 }: MovieSectionProps) => {
-  // const { data: movies, isLoading } = useQuery<Movie[]>({
-  //   queryKey: [sortParam],
-  //   queryFn: fetcher,
-  // });
-
   return (
     <div className="mt-12">
       <SectionHeader
@@ -38,7 +35,7 @@ export const MovieSection = ({
           <Link href={`/explore?sort=${sortParam}`}>
             <Button
               variant="link"
-              className="text-primary hover:text-primary/80 flex items-center gap-1"
+              className="text-white hover:text-primary/80 flex items-center gap-1"
             >
               See more <ChevronRight className="w-4 h-4" />
             </Button>
@@ -62,7 +59,7 @@ export const MovieSection = ({
             ))
           : movies?.map((movie) => (
               <SwiperSlide key={movie.id} className="!w-[175px]">
-                <FilmCard movie={movie} />
+                <FilmCard movie={movie} type={type} />
               </SwiperSlide>
             ))}
       </Swiper>
