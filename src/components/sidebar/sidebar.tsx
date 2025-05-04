@@ -112,7 +112,7 @@ const Sidebar: FC<SidebarProps> = ({ className = "" }) => {
           <User size={25} />
           <p>Profile</p>
         </button>
-        <Link href="/auth" className="flex gap-5 items-center">
+        <Link href="/login" className="flex gap-5 items-center">
           <LogIn size={30} />
           <p>Login</p>
         </Link>

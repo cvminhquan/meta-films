@@ -37,3 +37,7 @@ export const fetchTopRatedTV = async (): Promise<Movie[]> => {
   const res = await api.get("/tv/top_rated");
   return res.data.results;
 };
+export const fetchTrendingTV = async (): Promise<Movie[]> => {
+  const res = await api.get("/trending/tv/day");
+  return res.data.results;
+};

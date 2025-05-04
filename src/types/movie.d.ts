@@ -14,4 +14,5 @@ export interface Movie {
   video: boolean;
   name: string;
   genre_ids: number[];
+  media_type: string
 }
