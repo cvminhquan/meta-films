@@ -1,5 +1,5 @@
 import { WatchPlayerWithServers } from "@/components/watch-player-with-servers/watch-player-with-servers";
-import { getTVDetail } from "@/libs/tmdb";
+import { getTVDetail } from "@/libs/phimapi";
 
 type Props = {
   params: {

@@ -1,14 +1,11 @@
 "use client";
 
-import { useGenres } from "@/components/provider/genre-context/genre-context";
-import { SeasonBrowser } from "@/components/season-browser";
-import { getRealEpisodeCount } from "@/libs/embed";
-import { getSeasonDetail, getSimilarTV, getTVDetail } from "@/libs/tmdb";
+import { getSeasonDetail, getSimilarTV, getTVDetail } from "@/libs/phimapi";
 import { useQuery } from "@tanstack/react-query";
 import { Heart, MoreVertical, Play, Share } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { use, useEffect, useState } from "react";
+import { use, useState } from "react";
 
 interface Params {
   id: string;
@@ -153,9 +150,9 @@ export default function TVDetailPage({ params }: { params: Promise<Params> }) {
         </div>
       </div>
 
-      {movie.seasons && movie.seasons.length > 0 && (
+      {/* {movie.seasons && movie.seasons.length > 0 && (
         <SeasonBrowser tvId={parsedId} seasons={movie.seasons} />
-      )}
+      )} */}
     </>
   );
 }

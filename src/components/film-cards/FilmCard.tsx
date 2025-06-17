@@ -6,7 +6,15 @@ import type { FC } from "react";
 
 interface FilmCardProps {
   movie: Movie;
-  type?: "movie" | "tv" | "series";
+  type:
+    | "phim-bo"
+    | "phim-le"
+    | "tv-shows"
+    | "hoat-hinh"
+    | "phim-vietsub"
+    | "phim-thuyet-minh"
+    | "phim-long-tieng";
+
   className?: string;
 }
 
@@ -15,13 +23,20 @@ const FilmCard: FC<FilmCardProps> = ({
   type = "movie",
   className = "",
 }) => {
-  const { id, name, original_title, poster_path, vote_average } = movie;
+  const {
+    slug,
+    name,
+    origin_name,
+    poster_url,
+    tmdb: { vote_average },
+  } = movie;
+
   return (
     <div className={`relative group ${className}`}>
-      <Link href={`/${type}/${id}`}>
+      <Link href={`/movie/${slug}`}>
         <div className="relative aspect-[2/3] overflow-hidden rounded-md">
           <Image
-            src={`https://image.tmdb.org/t/p/w500${poster_path}`}
+            src={`https://img.phimapi.com/${poster_url}`}
             alt={name || ""}
             title={name || ""}
             fill
@@ -39,7 +54,7 @@ const FilmCard: FC<FilmCardProps> = ({
         </div>
 
         <h3 className="mt-2 text-white text-sm md:text-base font-medium truncate">
-          {name || original_title}
+          {name || origin_name}
         </h3>
       </Link>
     </div>

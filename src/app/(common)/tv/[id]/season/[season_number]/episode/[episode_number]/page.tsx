@@ -1,4 +1,4 @@
-import { getEpisodeDetail } from "@/libs/tmdb";
+import { getEpisodeDetail } from "@/libs/phimapi";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 

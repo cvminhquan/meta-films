@@ -1,14 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
 import FilmCard from "@/components/film-cards/FilmCard";
-import SearchBar from "@/components/searchbar/searchbar";
+import { fetchExploreList } from "@/libs/phimapi";
 import { Movie } from "@/types/movie";
+import { useQuery } from "@tanstack/react-query";
 import { ChevronDown } from "lucide-react";
-import { fetchExploreList } from "@/libs/tmdb";
-import { useGenres } from "@/components/provider/genre-context/genre-context";
+import { useSearchParams } from "next/navigation";
+import { useState } from "react";
 
 const genres = [
   "Action",

@@ -1,7 +1,6 @@
-import { getSeasonDetail } from "@/libs/tmdb";
 import { cn } from "@/libs/utils";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -26,12 +25,12 @@ export default function SeasonBrowser({ tvId, seasons }: SeasonBrowserProps) {
 
   const totalPages = Math.ceil(seasons.length / SEASONS_PER_PAGE);
 
-  const { data: seasonDetail } = useQuery({
-    queryKey: ["seasonDetail", tvId, activeSeason],
-    queryFn: () => getSeasonDetail(tvId, activeSeason),
-    enabled: !!tvId,
-    staleTime: 1000 * 60 * 10,
-  });
+  // const { data: seasonDetail } = useQuery({
+  //   queryKey: ["seasonDetail", tvId, activeSeason],
+  //   queryFn: () => getSeasonDetail(tvId),
+  //   enabled: !!tvId,
+  //   staleTime: 1000 * 60 * 10,
+  // });
 
   return (
     <>
@@ -126,7 +125,7 @@ export default function SeasonBrowser({ tvId, seasons }: SeasonBrowserProps) {
         </div>
 
         <div className="grid grid-cols-12 gap-6">
-          <div
+          {/* <div
             className={cn(
               "col-span-12",
               seasonDetail?.overview ? "md:col-span-5" : ""
@@ -146,9 +145,9 @@ export default function SeasonBrowser({ tvId, seasons }: SeasonBrowserProps) {
                 ))}
               </div>
             </div>
-          </div>
+          </div> */}
 
-          {seasonDetail?.overview && (
+          {/* {seasonDetail?.overview && (
             <div className="col-span-12 md:col-span-7">
               <div className="bg-dark-darken rounded-lg p-4">
                 <h3 className="text-white font-bold mb-4">Content</h3>
@@ -157,7 +156,7 @@ export default function SeasonBrowser({ tvId, seasons }: SeasonBrowserProps) {
                 </p>
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </>

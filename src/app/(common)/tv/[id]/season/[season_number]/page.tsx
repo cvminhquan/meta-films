@@ -1,4 +1,4 @@
-import { getSeasonDetail } from "@/libs/tmdb";
+import { getSeasonDetail } from "@/libs/phimapi";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";

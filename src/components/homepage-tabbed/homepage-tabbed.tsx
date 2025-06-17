@@ -1,72 +1,57 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
-  fetchPopularMovies,
-  fetchTopRatedMovies,
-  fetchUpcomingMovies,
-  fetchTrendingMovies,
-  fetchPopularTV,
-  fetchTopRatedTV,
-  fetchTrendingTV,
-  fetchPopularSeries,
-} from "@/libs/tmdb";
+  fetchPhimBo,
+  fetchPhimLe,
+  fetchTVShow,
+  fetchHoatHinh,
+  fetchPhimVietsub,
+  fetchThuyetMinh,
+  fetchLongTieng,
+} from "@/libs/phimapi";
 import { Movie } from "@/types/movie";
-import { MovieSection } from "@/components/movie-section";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "../ui/skeleton";
-import { TrendingSlider } from "../trending-slider";
-import { cn } from "@/libs/utils";
 import { MOVIE_TYPE } from "@/constanst/movie";
+import { Button } from "../ui/button";
+import { MovieListSection } from "../right-sidebar/components/movie-list-section";
+import { MovieSection } from "../movie-section";
 
 export default function TabbedHomepage() {
-  const [tab, setTab] = useState<MOVIE_TYPE.MOVIE | MOVIE_TYPE.TV | "series">(
-    MOVIE_TYPE.MOVIE
-  );
-
-  const [loading, setLoading] = useState(true);
-
-  const [popular, setPopular] = useState<Movie[]>([]);
-  const [topRated, setTopRated] = useState<Movie[]>([]);
-  const [upcoming, setUpcoming] = useState<Movie[]>([]);
-  const [trending, setTrending] = useState<Movie[]>([]);
-
+  const [tab, setTab] = useState<MOVIE_TYPE>(MOVIE_TYPE.PHIM_BO);
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState(false);
+  console.log("Current tab:", tab);
+  console.log("Movies:", movies);
   useEffect(() => {
-    setLoading(true);
-
     const fetchData = async () => {
-      if (tab === MOVIE_TYPE.MOVIE) {
-        const [pop, top, upc, trend] = await Promise.all([
-          fetchPopularMovies(),
-          fetchTopRatedMovies(),
-          fetchUpcomingMovies(),
-          fetchTrendingMovies(),
-        ]);
-        setPopular(pop);
-        setTopRated(top);
-        setUpcoming(upc);
-        setTrending(trend);
-      } else if (tab === "series") {
-        const [seriesPopular, seriesTopRated, seriesTrend] = await Promise.all([
-          fetchPopularSeries(),
-          fetchTopRatedTV(),
-          fetchTrendingTV(),
-        ]);
-        setPopular(seriesPopular);
-        setTopRated(seriesTopRated);
-        setUpcoming([]);
-        setTrending(seriesTrend);
-      } else {
-        const [tvPopular, tvTopRated, trend] = await Promise.all([
-          fetchPopularTV(),
-          fetchTopRatedTV(),
-          fetchTrendingTV(),
-        ]);
-        setPopular(tvPopular);
-        setTopRated(tvTopRated);
-        setUpcoming([]);
-        setTrending(trend);
+      setLoading(true);
+      let data: Movie[] = [];
+
+      switch (tab) {
+        case MOVIE_TYPE.PHIM_BO:
+          data = await fetchPhimBo();
+          break;
+        case MOVIE_TYPE.PHIM_LE:
+          data = await fetchPhimLe();
+          break;
+        case MOVIE_TYPE.TV_SHOW:
+          data = await fetchTVShow();
+          break;
+        case MOVIE_TYPE.HOAT_HINH:
+          data = await fetchHoatHinh();
+          break;
+        case MOVIE_TYPE.PHIM_VIETSUB:
+          data = await fetchPhimVietsub();
+          break;
+        case MOVIE_TYPE.THUYET_MINH:
+          data = await fetchThuyetMinh();
+          break;
+        case MOVIE_TYPE.LONG_TIENG:
+          data = await fetchLongTieng();
+          break;
       }
+
+      setMovies(data);
       setLoading(false);
     };
 
@@ -74,137 +59,65 @@ export default function TabbedHomepage() {
   }, [tab]);
 
   return (
-    <div className="p-4 md:p-8">
-      <div className="flex gap-4 mb-6">
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-center gap-2">
         <Button
-          variant={tab === MOVIE_TYPE.MOVIE ? "default" : "ghost"}
-          onClick={() => setTab(MOVIE_TYPE.MOVIE)}
-          className={cn(
-            tab === MOVIE_TYPE.MOVIE &&
-              "relative after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-8 after:h-1 after:bg-white"
-          )}
+          variant={tab === MOVIE_TYPE.PHIM_BO ? "default" : "ghost"}
+          onClick={() => setTab(MOVIE_TYPE.PHIM_BO)}
         >
-          Movies
+          Phim bộ
         </Button>
-        {/* <Button
-          variant={tab === "series" ? "default" : "ghost"}
-          onClick={() => setTab("series")}
-          className={cn(
-            tab === "series" &&
-              "relative after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-8 after:h-1 after:bg-white"
-          )}
-        >
-          Series
-        </Button> */}
-
         <Button
-          variant={tab === MOVIE_TYPE.TV ? "default" : "ghost"}
-          onClick={() => setTab(MOVIE_TYPE.TV)}
-          className={cn(
-            tab === MOVIE_TYPE.TV &&
-              "relative after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-8 after:h-1 after:bg-white"
-          )}
+          variant={tab === MOVIE_TYPE.PHIM_LE ? "default" : "ghost"}
+          onClick={() => setTab(MOVIE_TYPE.PHIM_LE)}
         >
-          TV Shows
+          Phim lẻ
+        </Button>
+        <Button
+          variant={tab === MOVIE_TYPE.TV_SHOW ? "default" : "ghost"}
+          onClick={() => setTab(MOVIE_TYPE.TV_SHOW)}
+        >
+          TV Show
+        </Button>
+        <Button
+          variant={tab === MOVIE_TYPE.HOAT_HINH ? "default" : "ghost"}
+          onClick={() => setTab(MOVIE_TYPE.HOAT_HINH)}
+        >
+          Hoạt hình
+        </Button>
+        <Button
+          variant={tab === MOVIE_TYPE.PHIM_VIETSUB ? "default" : "ghost"}
+          onClick={() => setTab(MOVIE_TYPE.PHIM_VIETSUB)}
+        >
+          Vietsub
+        </Button>
+        <Button
+          variant={tab === MOVIE_TYPE.THUYET_MINH ? "default" : "ghost"}
+          onClick={() => setTab(MOVIE_TYPE.THUYET_MINH)}
+        >
+          Thuyết minh
+        </Button>
+        <Button
+          variant={tab === MOVIE_TYPE.LONG_TIENG ? "default" : "ghost"}
+          onClick={() => setTab(MOVIE_TYPE.LONG_TIENG)}
+        >
+          Lồng tiếng
         </Button>
       </div>
 
-      {loading ? (
-        <div className="container mx-auto">
-          <Skeleton title="Popular" />
-          <Skeleton title="Top Rated" />
-          {tab === MOVIE_TYPE.MOVIE && (
-            <>
-              <Skeleton title="Upcoming" />
-              <Skeleton title="Trending" />
-            </>
-          )}
-        </div>
-      ) : (
-        <div className="container mx-auto">
-          {trending.length > 0 && (
-            <TrendingSlider tab={tab} movies={trending} />
-          )}
-
-          <MovieSection
-            type={
-              tab === MOVIE_TYPE.MOVIE
-                ? MOVIE_TYPE.MOVIE
-                : tab === MOVIE_TYPE.TV
-                ? MOVIE_TYPE.TV
-                : "series"
-            }
-            title={
-              tab === MOVIE_TYPE.MOVIE
-                ? "Popular Movies"
-                : tab === MOVIE_TYPE.TV
-                ? "Popular TV Shows"
-                : "Popular Series"
-            }
-            movies={popular}
-            sortParam={
-              tab === MOVIE_TYPE.MOVIE
-                ? "popular"
-                : tab === MOVIE_TYPE.TV
-                ? "tv_popular"
-                : "series_popular"
-            }
-          />
-          <MovieSection
-            type={
-              tab === MOVIE_TYPE.MOVIE
-                ? MOVIE_TYPE.MOVIE
-                : tab === MOVIE_TYPE.TV
-                ? MOVIE_TYPE.TV
-                : "series"
-            }
-            title={
-              tab === MOVIE_TYPE.MOVIE
-                ? "Top Rated Movies"
-                : tab === MOVIE_TYPE.TV
-                ? "Top Rated TV Shows"
-                : "Top Rated Series"
-            }
-            movies={topRated}
-            sortParam={
-              tab === MOVIE_TYPE.MOVIE
-                ? "top_rated"
-                : tab === MOVIE_TYPE.TV
-                ? "tv_top_rated"
-                : "series_top_rated"
-            }
-          />
-
-          {tab === MOVIE_TYPE.MOVIE && (
-            <>
-              <MovieSection
-                type={
-                  tab === MOVIE_TYPE.MOVIE
-                    ? MOVIE_TYPE.MOVIE
-                    : tab === MOVIE_TYPE.TV
-                    ? MOVIE_TYPE.TV
-                    : "series"
-                }
-                title="Upcoming Movies"
-                movies={upcoming}
-                sortParam="upcoming"
-              />
-              <MovieSection
-                type={
-                  tab === MOVIE_TYPE.MOVIE
-                    ? MOVIE_TYPE.MOVIE
-                    : tab === MOVIE_TYPE.TV
-                    ? MOVIE_TYPE.TV
-                    : "series"
-                }
-                title="Trending Movies"
-                movies={trending}
-                sortParam="trending"
-              />
-            </>
-          )}
-        </div>
-      )}
+      <MovieSection movies={movies} title="" type={tab} sortParam={tab} />
+      {/* <MovieSection
+        type={
+          tab === MOVIE_TYPE.MOVIE
+            ? MOVIE_TYPE.MOVIE
+            : tab === MOVIE_TYPE.TV
+            ? MOVIE_TYPE.TV
+            : "series"
+        }
+        title="Upcoming Movies"
+        movies={upcoming}
+        sortParam="upcoming"
+      /> */}
     </div>
   );
 }

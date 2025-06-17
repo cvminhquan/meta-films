@@ -13,7 +13,7 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 
 type MovieSectionProps = {
-  type: "movie" | "tv" | "series";
+  type: "phim-bo" | "phim-le" | "tv-shows" | "hoat-hinh" | "phim-vietsub" | "phim-thuyet-minh" | "phim-long-tieng";
   title: string;
   movies: Movie[];
   sortParam: string;
@@ -58,7 +58,7 @@ export const MovieSection = ({
               </SwiperSlide>
             ))
           : movies?.map((movie) => (
-              <SwiperSlide key={movie.id} className="!w-[220px]">
+              <SwiperSlide key={movie._id} className="!w-[220px]">
                 <FilmCard movie={movie} type={type} />
               </SwiperSlide>
             ))}

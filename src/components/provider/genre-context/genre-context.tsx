@@ -1,5 +1,6 @@
 "use client";
 
+import { NEXT_PUBLIC_API_URL_2 } from "@/constanst/env";
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 
@@ -18,33 +19,18 @@ export const GenreProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const fetchGenres = async () => {
-      const [movieRes, tvRes] = await Promise.all([
-        axios.get("https://api.themoviedb.org/3/genre/movie/list", {
-          params: {
-            api_key: process.env.NEXT_PUBLIC_TMDB_API_KEY,
-            language: "en-US",
-          },
-        }),
-        axios.get("https://api.themoviedb.org/3/genre/tv/list", {
-          params: {
-            api_key: process.env.NEXT_PUBLIC_TMDB_API_KEY,
-            language: "en-US",
-          },
-        }),
+      const [movieRes] = await Promise.all([
+        axios.get(`${NEXT_PUBLIC_API_URL_2}/the-loai`, {}),
       ]);
 
       const map = new Map<number, string>();
-      movieRes.data.genres.forEach((g: any) => map.set(g.id, g.name));
-      tvRes.data.genres.forEach((g: any) => {
-        if (!map.has(g.id)) map.set(g.id, g.name); // avoid overwrite
-      });
-
+      movieRes.data.forEach((g: any) => map.set(g.id, g.name));
       setGenreMap(map);
     };
 
     fetchGenres();
   }, []);
-
+console.log("GenreProvider rendered with genres:", genreMap);
   return (
     <GenreContext.Provider value={genreMap}>{children}</GenreContext.Provider>
   );

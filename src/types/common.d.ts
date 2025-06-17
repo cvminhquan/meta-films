@@ -211,3 +211,9 @@ export interface SearchArticle {
   slug?: string
   search?: string
 }
+
+export interface CategoriesType {
+  _id: number
+  name: string
+  slug: string
+}
