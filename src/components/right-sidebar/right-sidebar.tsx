@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
-import { SidebarTabs } from "./components/sidebar-tabs";
-import { NowPlayingCard } from "./components/now-playing-card";
 import { MovieListSection } from "./components/movie-list-section";
+import { NowPlayingCard } from "./components/now-playing-card";
+import { SidebarTabs } from "./components/sidebar-tabs";
 
 export default function RightSidebar() {
   const [tab, setTab] = useState("related");
@@ -14,10 +14,10 @@ export default function RightSidebar() {
       <MovieListSection
         title={
           tab === "related"
-            ? "Related Movies"
+            ? "Phim liên quan"
             : tab === "watchlist"
-            ? "Your Watchlist"
-            : "Watch History"
+            ? "Danh sách xem"
+            : "Lịch sử xem"
         }
       />
     </div>

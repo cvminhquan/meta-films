@@ -1,5 +1,3 @@
-import { cn } from "@/libs/utils";
-import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -62,9 +60,9 @@ export default function SeasonBrowser({ tvId, seasons }: SeasonBrowserProps) {
                     <p className="text-gray-400 text-sm">
                       Air Date: {season.air_date || "N/A"}
                     </p>
-                    <p className="text-gray-400 text-sm">
-                      Episodes: {season.episode_count}
-                    </p>
+                    <div className="text-sm text-gray-300">
+                      Tập phim: {season.episode_count}
+                    </div>
                   </div>
                   {season.overview && (
                     <p className="text-sm text-white/80 mt-3">
@@ -132,7 +130,7 @@ export default function SeasonBrowser({ tvId, seasons }: SeasonBrowserProps) {
             )}
           >
             <div className="bg-dark-darken rounded-lg p-4">
-              <h3 className="text-white font-bold mb-4">List of Episodes</h3>
+              <h3 className="text-white font-bold mb-4">Danh sách tập phim</h3>
               <div className="grid grid-cols-5 gap-2">
                 {seasonDetail?.episodes?.map((ep: any) => (
                   <Link

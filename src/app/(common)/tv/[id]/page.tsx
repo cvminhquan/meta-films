@@ -132,7 +132,7 @@ export default function TVDetailPage({ params }: { params: Promise<Params> }) {
               className="flex gap-6 items-center pl-6 pr-12 py-3 rounded-full bg-primary text-white hover:bg-blue-600 transition duration-300 mt-24"
             >
               <Play className="h-6 w-6 fill-white" />
-              <span className="text-lg font-medium">WATCH</span>
+              <span className="text-lg font-medium">XEM PHIM</span>
             </Link>
           </div>
 
