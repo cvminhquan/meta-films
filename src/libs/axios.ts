@@ -5,12 +5,7 @@ const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL_2,
   headers: {
     "Content-Type": "application/json",
-  },
-  params: {
-    api_key: process.env.NEXT_PUBLIC_TMDB_API_KEY,
-    language: "en-US",
-    include_adult: false,
-  },
+  }
 });
 
 // Optional: Thêm interceptor xử lý lỗi hoặc token

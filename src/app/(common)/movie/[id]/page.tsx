@@ -97,7 +97,7 @@ export default function MovieDetailPage() {
 
       <div className="grid grid-cols-5 gap-2">
         <div className="col-span-2">
-          {movie.type === "series" && episodes.length > 0 && (
+          {episodes.length > 0 && (
             <section className="px-[5%] py-10">
               <h2 className="text-2xl font-bold text-white mb-5">Danh sách tập</h2>
               <div className="grid grid-cols-5 gap-2">

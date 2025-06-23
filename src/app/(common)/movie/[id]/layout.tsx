@@ -6,9 +6,7 @@ export default async function MovieIdLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: {
-    id: string;
-  };
+  params: { id: string };
 }) {
   const movieDetail = await getMovieDetail(params.id);
 

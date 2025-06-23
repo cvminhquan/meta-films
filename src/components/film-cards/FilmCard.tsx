@@ -1,3 +1,4 @@
+import { Skeleton } from "@/components/ui/skeleton";
 import { Movie } from "@/types/movie";
 import { Star } from "lucide-react";
 import Image from "next/image";
@@ -28,28 +29,79 @@ const FilmCard: FC<FilmCardProps> = ({
     name,
     origin_name,
     poster_url,
+    thumb_url,
     tmdb: { vote_average },
   } = movie;
-
+  console.log("poster_url", poster_url);
   return (
-    <div className={`relative group ${className}`}>
-      <Link href={`/movie/${slug}`}>
+    <div className={`firstrelative group ${className}`}>
+      <Link href={`/movie/${slug}`} title={name || ""}>
         <div className="relative aspect-[2/3] overflow-hidden rounded-md">
-          <Image
-            src={`https://img.phimapi.com/${poster_url}`}
-            alt={name || ""}
-            title={name || ""}
-            fill
-            className="object-cover group-hover:brightness-75 transition duration-300"
-          />
-
-          <div className="absolute top-2 left-2 bg-gradient-to-tl from-indigo-500 to-fuchsia-500 text-white rounded-full flex items-center gap-1 px-2 py-1 text-sm">
-            <span>
-              {typeof vote_average === "number"
-                ? vote_average.toFixed(1)
-                : "N/A"}
-            </span>
-            <Star size={14} className="fill-white" />
+          {poster_url && poster_url.trim() !== "" ? (
+            <Image
+              src={
+                poster_url.startsWith("http")
+                  ? poster_url
+                  : `https://img.phimapi.com/${poster_url}`
+              }
+              alt={name || ""}
+              title={name || ""}
+              fill
+              className="object-cover group-hover:brightness-75 transition duration-300"
+            />
+          ) : (
+            <Skeleton className="w-full h-full absolute inset-0" />
+          )}
+          <div className="flex justify-between absolute top-2 right-2 left-2">
+            <div className="flex justify-between bg-gradient-to-tl from-indigo-500 to-fuchsia-500 text-white rounded-full items-center gap-1 px-2 py-1 text-sm">
+              <span>
+                {typeof vote_average === "number" && vote_average !== 0
+                  ? vote_average.toFixed(1)
+                  : "N/A"}
+              </span>
+              <Star size={14} className="fill-white" />
+            </div>
+            <div>
+              {type === "phim-bo" &&
+                (() => {
+                  const status = (movie as any).status;
+                  const episodeCurrent = movie.episode_current;
+                  const episodeTotal = (movie as any).episode_total;
+                  // Ongoing: show current/total or just current
+                  if (status === "ongoing") {
+                    // Try to extract current/total from episodeCurrent (e.g., "8/12")
+                    const match =
+                      episodeCurrent &&
+                      episodeCurrent.match(/(\d+)(?:\/(\d+))?/);
+                    if (match) {
+                      if (match[2]) return `${match[1]}/${match[2]}`;
+                      if (match[1]) return match[1];
+                    }
+                    // Fallback: just show episodeCurrent or episodeTotal
+                    return (
+                      episodeCurrent ||
+                      (episodeTotal ? `${episodeTotal}` : null)
+                    );
+                  }
+                  // Completed: show total/total or just total
+                  if (status === "completed") {
+                    // Try to extract total from episodeCurrent (e.g., "Hoàn Tất (12/12)")
+                    const match =
+                      episodeCurrent && episodeCurrent.match(/\((\d+\/\d+)\)/);
+                    if (match) return match[1];
+                    if (episodeTotal) return `${episodeTotal}/${episodeTotal}`;
+                    // Fallback: just show episodeCurrent or episodeTotal
+                    return (
+                      episodeCurrent ||
+                      (episodeTotal ? `${episodeTotal}` : null)
+                    );
+                  }
+                  // Fallback for unknown status
+                  if (episodeCurrent) return episodeCurrent;
+                  if (episodeTotal) return `${episodeTotal}`;
+                  return null;
+                })()}
+            </div>
           </div>
         </div>
 

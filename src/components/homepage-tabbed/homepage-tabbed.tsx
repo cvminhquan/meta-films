@@ -50,9 +50,6 @@ export default function TabbedHomepage() {
     retry: 2,
   });
 
-  console.log("loading", loading);
-  console.log("error", error);
-
   return (
     <div className="space-y-8">
       <div className="flex flex-wrap items-center gap-2">

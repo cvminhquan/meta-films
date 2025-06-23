@@ -1,8 +1,9 @@
 "use client";
 
 import { NEXT_PUBLIC_API_URL_2 } from "@/constanst/env";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext } from "react";
 
 type GenreMap = Map<number, string>;
 
@@ -15,22 +16,18 @@ export const useGenres = () => {
 };
 
 export const GenreProvider = ({ children }: { children: React.ReactNode }) => {
-  const [genreMap, setGenreMap] = useState<GenreMap>(new Map());
+  const { data: genres = [] } = useQuery({
+    queryKey: ["genres"],
+    queryFn: async () => {
+      const res = await axios.get(`${NEXT_PUBLIC_API_URL_2}/the-loai`, {});
+      return res.data;
+    },
+    staleTime: 1000 * 60 * 60, // 1 hour
+  });
 
-  useEffect(() => {
-    const fetchGenres = async () => {
-      const [movieRes] = await Promise.all([
-        axios.get(`${NEXT_PUBLIC_API_URL_2}/the-loai`, {}),
-      ]);
+  const genreMap = new Map<number, string>();
+  genres.forEach((g: any) => genreMap.set(g.id, g.name));
 
-      const map = new Map<number, string>();
-      movieRes.data.forEach((g: any) => map.set(g.id, g.name));
-      setGenreMap(map);
-    };
-
-    fetchGenres();
-  }, []);
-console.log("GenreProvider rendered with genres:", genreMap);
   return (
     <GenreContext.Provider value={genreMap}>{children}</GenreContext.Provider>
   );

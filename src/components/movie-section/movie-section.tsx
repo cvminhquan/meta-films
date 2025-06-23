@@ -7,6 +7,7 @@ import FilmCard from "../film-cards/FilmCard";
 import { Skeleton } from "../ui/skeleton";
 import { Button } from "../ui/button";
 import SectionHeader from "../ui/SectionHeader";
+import { Fragment } from "react";
 
 type MovieSectionProps = {
   type: "phim-bo" | "phim-le" | "tv-shows" | "hoat-hinh" | "phim-vietsub" | "phim-thuyet-minh" | "phim-long-tieng";
@@ -40,16 +41,18 @@ export const MovieSection = ({
         }
       />
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 p-4">
-        {isComponentsLoading
+        {
+          isComponentsLoading
           ? new Array(6).fill("").map((_, index) => (
-            <div key={index} className="">
+              <Fragment key={index}>
                 <Skeleton className="h-[280px] shadow-sm" />
-              </div>
+              </Fragment>
             ))
-          : movies?.map((movie) => (
-              <div key={movie._id} className="">
+          :
+          movies?.map((movie) => (
+              <Fragment key={movie._id}>
                 <FilmCard movie={movie} type={type} />
-              </div>
+              </Fragment>
             ))}
       </div>
     </div>

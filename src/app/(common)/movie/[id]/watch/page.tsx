@@ -13,6 +13,7 @@ export default function WatchTVPage() {
   const episode = searchParams.get("episode");
   const pathname = usePathname();
 
+  console.log('movieDetail', movieDetail)
   const pathSegments = pathname.split('/');
   const movieSlug = pathSegments[2];
 
