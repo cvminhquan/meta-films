@@ -1,62 +1,57 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { MOVIE_TYPE } from "@/constanst/movie";
 import {
+  fetchHoatHinh,
+  fetchLongTieng,
   fetchPhimBo,
   fetchPhimLe,
-  fetchTVShow,
-  fetchHoatHinh,
   fetchPhimVietsub,
   fetchThuyetMinh,
-  fetchLongTieng,
+  fetchTVShow,
 } from "@/libs/phimapi";
-import { Movie } from "@/types/movie";
-import { MOVIE_TYPE } from "@/constanst/movie";
-import { Button } from "../ui/button";
-import { MovieListSection } from "../right-sidebar/components/movie-list-section";
+import type { Movie } from "@/types/movie";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { MovieSection } from "../movie-section";
+import { Button } from "../ui/button";
 
 export default function TabbedHomepage() {
   const [tab, setTab] = useState<MOVIE_TYPE>(MOVIE_TYPE.PHIM_BO);
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [loading, setLoading] = useState(false);
-  console.log("Current tab:", tab);
-  console.log("Movies:", movies);
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      let data: Movie[] = [];
+  
+  // Helper function to get the appropriate fetch function based on tab
+  const getFetchFunction = (tabType: MOVIE_TYPE) => {
+    switch (tabType) {
+      case MOVIE_TYPE.PHIM_BO:
+        return fetchPhimBo;
+      case MOVIE_TYPE.PHIM_LE:
+        return fetchPhimLe;
+      case MOVIE_TYPE.TV_SHOW:
+        return fetchTVShow;
+      case MOVIE_TYPE.HOAT_HINH:
+        return fetchHoatHinh;
+      case MOVIE_TYPE.PHIM_VIETSUB:
+        return fetchPhimVietsub;
+      case MOVIE_TYPE.THUYET_MINH:
+        return fetchThuyetMinh;
+      case MOVIE_TYPE.LONG_TIENG:
+        return fetchLongTieng;
+      default:
+        return fetchPhimBo;
+    }
+  };
 
-      switch (tab) {
-        case MOVIE_TYPE.PHIM_BO:
-          data = await fetchPhimBo();
-          break;
-        case MOVIE_TYPE.PHIM_LE:
-          data = await fetchPhimLe();
-          break;
-        case MOVIE_TYPE.TV_SHOW:
-          data = await fetchTVShow();
-          break;
-        case MOVIE_TYPE.HOAT_HINH:
-          data = await fetchHoatHinh();
-          break;
-        case MOVIE_TYPE.PHIM_VIETSUB:
-          data = await fetchPhimVietsub();
-          break;
-        case MOVIE_TYPE.THUYET_MINH:
-          data = await fetchThuyetMinh();
-          break;
-        case MOVIE_TYPE.LONG_TIENG:
-          data = await fetchLongTieng();
-          break;
-      }
+  // Use React Query for data fetching with caching
+  const { data: movies = [], isLoading: loading, error } = useQuery<Movie[]>({
+    queryKey: ['movies', tab],
+    queryFn: () => getFetchFunction(tab)(),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+    retry: 2,
+  });
 
-      setMovies(data);
-      setLoading(false);
-    };
-
-    fetchData();
-  }, [tab]);
+  console.log("loading", loading);
+  console.log("error", error);
 
   return (
     <div className="space-y-8">
@@ -64,60 +59,61 @@ export default function TabbedHomepage() {
         <Button
           variant={tab === MOVIE_TYPE.PHIM_BO ? "default" : "ghost"}
           onClick={() => setTab(MOVIE_TYPE.PHIM_BO)}
+          disabled={loading}
         >
           Phim bộ
         </Button>
         <Button
           variant={tab === MOVIE_TYPE.PHIM_LE ? "default" : "ghost"}
           onClick={() => setTab(MOVIE_TYPE.PHIM_LE)}
+          disabled={loading}
         >
           Phim lẻ
         </Button>
         <Button
           variant={tab === MOVIE_TYPE.TV_SHOW ? "default" : "ghost"}
           onClick={() => setTab(MOVIE_TYPE.TV_SHOW)}
+          disabled={loading}
         >
           TV Show
         </Button>
         <Button
           variant={tab === MOVIE_TYPE.HOAT_HINH ? "default" : "ghost"}
           onClick={() => setTab(MOVIE_TYPE.HOAT_HINH)}
+          disabled={loading}
         >
           Hoạt hình
         </Button>
         <Button
           variant={tab === MOVIE_TYPE.PHIM_VIETSUB ? "default" : "ghost"}
           onClick={() => setTab(MOVIE_TYPE.PHIM_VIETSUB)}
+          disabled={loading}
         >
           Vietsub
         </Button>
         <Button
           variant={tab === MOVIE_TYPE.THUYET_MINH ? "default" : "ghost"}
           onClick={() => setTab(MOVIE_TYPE.THUYET_MINH)}
+          disabled={loading}
         >
           Thuyết minh
         </Button>
         <Button
           variant={tab === MOVIE_TYPE.LONG_TIENG ? "default" : "ghost"}
           onClick={() => setTab(MOVIE_TYPE.LONG_TIENG)}
+          disabled={loading}
         >
           Lồng tiếng
         </Button>
       </div>
 
-      <MovieSection movies={movies} title="" type={tab} sortParam={tab} />
-      {/* <MovieSection
-        type={
-          tab === MOVIE_TYPE.MOVIE
-            ? MOVIE_TYPE.MOVIE
-            : tab === MOVIE_TYPE.TV
-            ? MOVIE_TYPE.TV
-            : "series"
-        }
-        title="Upcoming Movies"
-        movies={upcoming}
-        sortParam="upcoming"
-      /> */}
+      <MovieSection
+        movies={movies}
+        title=""
+        type={tab}
+        sortParam={tab}
+        isComponentsLoading={loading}
+      />
     </div>
   );
 }

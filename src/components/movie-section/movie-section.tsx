@@ -1,16 +1,12 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 import { Movie } from "@/types/movie";
 import FilmCard from "../film-cards/FilmCard";
 import { Skeleton } from "../ui/skeleton";
 import { Button } from "../ui/button";
 import SectionHeader from "../ui/SectionHeader";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
-import "swiper/css";
 
 type MovieSectionProps = {
   type: "phim-bo" | "phim-le" | "tv-shows" | "hoat-hinh" | "phim-vietsub" | "phim-thuyet-minh" | "phim-long-tieng";
@@ -25,8 +21,9 @@ export const MovieSection = ({
   title,
   movies,
   sortParam,
-  isComponentsLoading = false,
+  isComponentsLoading,
 }: MovieSectionProps) => {
+  console.log(isComponentsLoading)
   return (
     <div className="mt-12">
       <SectionHeader
@@ -42,27 +39,19 @@ export const MovieSection = ({
           </Link>
         }
       />
-      <Swiper
-        modules={[Navigation]}
-        navigation
-        slidesPerView="auto"
-        slidesPerGroupAuto
-        spaceBetween={30}
-        loop
-        className="tw-section-slider !py-2"
-      >
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 p-4">
         {isComponentsLoading
           ? new Array(6).fill("").map((_, index) => (
-              <SwiperSlide key={index} className="!w-[220px]">
-                <Skeleton className="!w-[220px] !h-[280px] shadow-sm" />
-              </SwiperSlide>
+            <div key={index} className="">
+                <Skeleton className="h-[280px] shadow-sm" />
+              </div>
             ))
           : movies?.map((movie) => (
-              <SwiperSlide key={movie._id} className="!w-[220px]">
+              <div key={movie._id} className="">
                 <FilmCard movie={movie} type={type} />
-              </SwiperSlide>
+              </div>
             ))}
-      </Swiper>
+      </div>
     </div>
   );
 };
