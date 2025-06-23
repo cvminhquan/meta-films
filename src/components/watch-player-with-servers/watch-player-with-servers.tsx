@@ -2,38 +2,35 @@
 import { useEffect, useRef, useState } from "react";
 
 interface WatchPlayerProps {
-  src: string;
+  src: {
+    link_embed: string;
+    slug?: string;
+    link_m3u8?: string;
+    filename: string;
+    name?: string;
+  };
 }
 
-export const WatchPlayerWithServers = ({ src }: WatchPlayerProps) => {
+export default function WatchPlayerWithServers({ src }: WatchPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
-  console.log("src", src);
-
-  // Check if the URL is from the embed player
-  const isEmbedUrl = src.startsWith('https://player.phimapi.com');
+  const isM3U8 = !!src.link_m3u8;
 
   useEffect(() => {
-    // For non-embed URLs that are m3u8 streams
-    if (videoRef.current && !isEmbedUrl && src.endsWith('.m3u8')) {
-      videoRef.current.src = src;
+    if (isM3U8 && videoRef.current) {
+      videoRef.current.src = src.link_m3u8!;
     }
-  }, [src, isEmbedUrl]);
+  }, [src.link_m3u8]);
 
-  const handleIframeLoad = () => {
-    setIsLoading(false);
-  };
-
+  const handleIframeLoad = () => setIsLoading(false);
   const handleIframeError = () => {
     setHasError(true);
     setIsLoading(false);
   };
 
-  if (!isEmbedUrl && src.endsWith('.m3u8')) {
-    // Use video player for direct m3u8 streams
+  if (isM3U8) {
     return (
       <div className="mt-6 space-y-4">
         <div className="relative w-full pb-[56.25%] h-0 rounded-lg overflow-hidden shadow-lg">
@@ -46,12 +43,12 @@ export const WatchPlayerWithServers = ({ src }: WatchPlayerProps) => {
             ref={videoRef}
             controls
             className="absolute top-0 left-0 w-full h-full border-0"
-            style={{ backgroundColor: '#000' }}
+            style={{ backgroundColor: "#000" }}
             onLoadStart={() => setIsLoading(true)}
             onCanPlay={() => setIsLoading(false)}
             onError={() => setHasError(true)}
           >
-            <source src={src} type="application/x-mpegURL" />
+            <source src={src.link_m3u8} type="application/x-mpegURL" />
             Trình duyệt của bạn không hỗ trợ thẻ video.
           </video>
         </div>
@@ -59,7 +56,7 @@ export const WatchPlayerWithServers = ({ src }: WatchPlayerProps) => {
     );
   }
 
-  // Use iframe for embed URLs
+  // fallback: dùng iframe nếu KHÔNG có link_m3u8
   return (
     <div className="mt-6 space-y-4">
       <div className="relative w-full pb-[56.25%] h-0 rounded-lg overflow-hidden shadow-lg">
@@ -73,10 +70,9 @@ export const WatchPlayerWithServers = ({ src }: WatchPlayerProps) => {
             <div className="text-white text-lg">Không thể tải trình phát</div>
           </div>
         )}
-        {src && (
+        {src.link_embed && (
           <iframe
-            ref={iframeRef}
-            src={src}
+            src={src.link_embed}
             allowFullScreen
             className="absolute top-0 left-0 w-full h-full border-0"
             title="Trình phát video"
@@ -88,4 +84,4 @@ export const WatchPlayerWithServers = ({ src }: WatchPlayerProps) => {
       </div>
     </div>
   );
-};
+}

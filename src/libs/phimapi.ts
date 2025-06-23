@@ -46,7 +46,10 @@ export const getMovieDetail = async (
   slug: string
 ): Promise<MovieDetail | null> => {
   try {
+    console.log("Fetching movie detail for slug:", slug);
     const response = await axios.get(`https://phimapi.com/phim/${slug}`);
+    // The API response structure is: { status, msg, movie, episodes }
+    // So we should return response.data.movie (not response.movie)
     return response.data;
   } catch (error) {
     console.error("Error fetching movie detail:", error);

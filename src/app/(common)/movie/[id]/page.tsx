@@ -1,29 +1,31 @@
-"use client";
-
-import { useMovieDetail } from "@/components/provider/movie-detail-context";
+import { useQuery } from "@tanstack/react-query";
+import { getMovieDetail } from "@/libs/phimapi";
 import { Heart, MoreVertical, Play, Share } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound, useParams } from "next/navigation";
+import { notFound } from "next/navigation";
+import { ParamsPageType } from "@/types/common";
 
-export default function MovieDetailPage() {
-  const { movieDetail } = useMovieDetail();
-  const params = useParams();
-  const id = params.id as string;
-
-  if (!movieDetail || !movieDetail.movie) {
-    return notFound();
+export default async function MovieDetailPage({
+  params,
+}: {
+  params: ParamsPageType;
+}) {
+  const id = await params.id;
+  console.log("MovieDetailPage id", id);
+  const movieDetail = await getMovieDetail(id);
+  console.log("MovieDetailPage movieDetail", movieDetail);
+  if (!movieDetail) {
+    notFound();
   }
-
-  const movie = movieDetail.movie;
   const episodes = movieDetail.episodes || [];
-
+  const movieData = movieDetail.movie;
   return (
     <>
       <div
         className="bg-cover bg-center bg-no-repeat md:h-[600px] h-[600px] rounded-bl-2xl relative"
         style={{
-          backgroundImage: `url(${movie.thumb_url})`,
+          backgroundImage: `url(${movieData.thumb_url})`,
         }}
       >
         <div className="bg-gradient-to-br from-transparent to-black/70 h-full rounded-bl-2xl">
@@ -32,9 +34,9 @@ export default function MovieDetailPage() {
               <div className="shrink-0 w-[185px] ml-3 md:ml-0">
                 <div className="relative w-full aspect-[2/3]">
                   <Image
-                    src={`${movie.poster_url}`}
-                    alt={movie.name}
-                    title={movie.name}
+                    src={`${movieData.poster_url}`}
+                    alt={movieData.name}
+                    title={movieData.name}
                     fill
                     className="object-cover rounded-md"
                   />
@@ -45,12 +47,12 @@ export default function MovieDetailPage() {
             <div className="flex-grow md:ml-14 ml-6 mt-6 md:mt-0">
               <div className="md:h-28 flex items-end">
                 <h1 className="text-white text-[45px] font-bold leading-tight">
-                  {movie.name}
+                  {movieData.name}
                 </h1>
               </div>
 
               <ul className="flex gap-3 flex-wrap md:mt-7 mt-3">
-                {movie.category?.map((genre: any) => (
+                {movieData.category?.map((genre: any) => (
                   <Link
                     key={genre.id}
                     href={`/explore?genre=${encodeURIComponent(genre.id)}`}
@@ -60,13 +62,13 @@ export default function MovieDetailPage() {
                   </Link>
                 ))}
               </ul>
-              {movie.content && (
+              {movieData.content && (
                 <>
                   <h4>Nội dung phim</h4>
                   <p className="text-white/90 text-lg mt-5">
-                    {movie.content.length > 200
-                      ? `${movie.content.slice(0, 200)}...`
-                      : movie.content}
+                    {movieData.content.length > 200
+                      ? `${movieData.content.slice(0, 200)}...`
+                      : movieData.content}
                   </p>
                 </>
               )}
@@ -99,7 +101,9 @@ export default function MovieDetailPage() {
         <div className="col-span-2">
           {episodes.length > 0 && (
             <section className="px-[5%] py-10">
-              <h2 className="text-2xl font-bold text-white mb-5">Danh sách tập</h2>
+              <h2 className="text-2xl font-bold text-white mb-5">
+                Danh sách tập
+              </h2>
               <div className="grid grid-cols-5 gap-2">
                 {episodes[0]?.server_data?.map((episode: any, idx: number) => (
                   <div
