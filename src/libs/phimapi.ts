@@ -5,6 +5,8 @@ import api from "./axios";
 
 const BASE_URL = "/v1/api/danh-sach";
 
+// Remove manual cache - use Next.js caching instead
+
 export const fetchMoviesByType = async (
   typeList: string,
   options: {
@@ -46,13 +48,39 @@ export const getMovieDetail = async (
   slug: string
 ): Promise<MovieDetail | null> => {
   try {
-    console.log("Fetching movie detail for slug:", slug);
-    const response = await axios.get(`https://phimapi.com/phim/${slug}`);
-    // The API response structure is: { status, msg, movie, episodes }
-    // So we should return response.data.movie (not response.movie)
-    return response.data;
+    const response = await fetch(`https://phimapi.com/phim/${slug}`, {
+      next: {
+        revalidate: 300 // Cache for 5 minutes
+      },
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      }
+    });
+
+    if (!response.ok) {
+      console.error(`Failed to fetch movie detail: ${response.status} ${response.statusText}`);
+      return null;
+    }
+
+    const text = await response.text();
+
+    // Check if response is valid JSON
+    if (!text.trim()) {
+      console.error('Empty response from API');
+      return null;
+    }
+
+    try {
+      const data = JSON.parse(text);
+      return data;
+    } catch (parseError) {
+      console.error('JSON parse error:', parseError);
+      console.error('Response text:', text.substring(0, 500));
+      return null;
+    }
   } catch (error) {
-    console.error("Error fetching movie detail:", error);
+    console.error('Network error:', error);
     return null;
   }
 };

@@ -1,15 +1,20 @@
 import ClientWatchWrapper from "@/components/client-wrapper/client-wrapper";
+import WatchLoading from "@/components/watch-loading/watch-loading";
 import { getMovieDetail } from "@/libs/phimapi";
 import { ParamsPageType } from "@/types/common";
 import { notFound } from "next/navigation";
+import { cache, Suspense } from "react";
+
+// Cache the movie detail function to avoid duplicate API calls
+const getCachedMovieDetail = cache(getMovieDetail);
 
 export default async function WatchMoviePage({
   params,
 }: {
-  params: ParamsPageType;
+  params: Promise<ParamsPageType>;
 }) {
-  const id = params.id;
-  const movieDetail = await getMovieDetail(id);
+  const { id } = await params;
+  const movieDetail = await getCachedMovieDetail(id);
 
   if (!movieDetail) {
     notFound();
@@ -21,7 +26,9 @@ export default async function WatchMoviePage({
         {movieDetail?.movie?.name}
       </h1>
 
-      <ClientWatchWrapper movie={movieDetail} />
+      <Suspense fallback={<WatchLoading />}>
+        <ClientWatchWrapper movie={movieDetail} />
+      </Suspense>
     </div>
   );
 }

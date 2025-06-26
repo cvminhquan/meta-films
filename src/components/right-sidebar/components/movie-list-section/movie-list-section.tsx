@@ -31,7 +31,7 @@ export function MovieListSection({ title }: { title: string }) {
                   alt={movie.title}
                   width={100}
                   height={64}
-                  className=""
+                  className="w-full h-auto object-cover"
                 />
               </div>
               <div className="flex flex-col">

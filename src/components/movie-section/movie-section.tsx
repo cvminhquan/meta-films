@@ -1,13 +1,12 @@
 "use client";
 
-import Link from "next/link";
-import { ChevronRight } from "lucide-react";
 import { Movie } from "@/types/movie";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 import FilmCard from "../film-cards/FilmCard";
-import { Skeleton } from "../ui/skeleton";
 import { Button } from "../ui/button";
 import SectionHeader from "../ui/SectionHeader";
-import { Fragment } from "react";
+import { Skeleton } from "../ui/skeleton";
 
 type MovieSectionProps = {
   type: "phim-bo" | "phim-le" | "tv-shows" | "hoat-hinh" | "phim-vietsub" | "phim-thuyet-minh" | "phim-long-tieng";
@@ -22,9 +21,8 @@ export const MovieSection = ({
   title,
   movies,
   sortParam,
-  isComponentsLoading,
+  isComponentsLoading = false,
 }: MovieSectionProps) => {
-  console.log(isComponentsLoading)
   return (
     <div className="mt-12">
       <SectionHeader
@@ -40,19 +38,17 @@ export const MovieSection = ({
           </Link>
         }
       />
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 p-4">
-        {
-          isComponentsLoading
-          ? new Array(6).fill("").map((_, index) => (
-              <Fragment key={index}>
-                <Skeleton className="h-[280px] shadow-sm" />
-              </Fragment>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        {isComponentsLoading
+          ? new Array(10).fill("").map((_, index) => (
+              <div key={index}>
+                <Skeleton className="w-full aspect-[3/4] shadow-sm" />
+              </div>
             ))
-          :
-          movies?.map((movie) => (
-              <Fragment key={movie._id}>
+          : movies?.slice(0, 10).map((movie) => (
+              <div key={movie._id}>
                 <FilmCard movie={movie} type={type} />
-              </Fragment>
+              </div>
             ))}
       </div>
     </div>
