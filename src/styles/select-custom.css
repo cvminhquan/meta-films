@@ -1,0 +1,183 @@
+/* Custom Select Styles */
+.custom-select {
+  position: relative;
+  display: inline-block;
+}
+
+.custom-select select {
+  background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+  color: white;
+  border: 2px solid #4b5563;
+  border-radius: 12px;
+  padding: 12px 40px 12px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  min-width: 140px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.custom-select select:hover {
+  border-color: #60a5fa;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+}
+
+.custom-select select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.custom-select::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #9ca3af;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.custom-select:hover::after {
+  border-top-color: #60a5fa;
+}
+
+.custom-select select:focus + .custom-select::after {
+  border-top-color: #3b82f6;
+}
+
+/* Option Styles */
+.custom-select select option {
+  background-color: #1f2937;
+  color: white;
+  padding: 12px 16px;
+  border: none;
+  font-weight: 500;
+}
+
+.custom-select select option:hover {
+  background-color: #374151;
+}
+
+.custom-select select option:checked {
+  background-color: #3b82f6;
+  color: white;
+}
+
+/* Genre Select - Blue Theme */
+.custom-select.genre select:hover {
+  border-color: #60a5fa;
+}
+
+.custom-select.genre select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Country Select - Green Theme */
+.custom-select.country select:hover {
+  border-color: #34d399;
+}
+
+.custom-select.country select:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* Year Select - Purple Theme */
+.custom-select.year select:hover {
+  border-color: #a78bfa;
+}
+
+.custom-select.year select:focus {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+/* Sort Field Select - Orange Theme */
+.custom-select.sort-field select:hover {
+  border-color: #fb923c;
+}
+
+.custom-select.sort-field select:focus {
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+/* Sort Type Select - Red Theme */
+.custom-select.sort-type select:hover {
+  border-color: #f87171;
+}
+
+.custom-select.sort-type select:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .custom-select select {
+    min-width: 120px;
+    padding: 10px 32px 10px 12px;
+    font-size: 13px;
+  }
+  
+  .custom-select::after {
+    right: 10px;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #9ca3af;
+  }
+}
+
+/* Dark mode option styling for better visibility */
+@media (prefers-color-scheme: dark) {
+  .custom-select select option {
+    background-color: #111827;
+    color: #f9fafb;
+  }
+  
+  .custom-select select option:hover {
+    background-color: #1f2937;
+  }
+}
+
+/* Animation for dropdown arrow */
+.custom-select select:focus ~ .custom-select::after {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+/* Smooth transitions */
+.custom-select select,
+.custom-select::after {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Loading state */
+.custom-select.loading select {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.custom-select.loading::after {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: translateY(-50%) rotate(0deg);
+  }
+  to {
+    transform: translateY(-50%) rotate(360deg);
+  }
+}

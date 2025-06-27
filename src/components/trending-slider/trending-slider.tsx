@@ -4,7 +4,17 @@ import { Movie } from "@/types/movie";
 import { PlayCircle, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useRef } from "react";
+import type { Swiper as SwiperType } from "swiper";
+import { Autoplay, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/autoplay";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+
 import { useGenres } from "../provider/genre-context/genre-context";
 
 export default function TrendingSlider({
@@ -15,95 +25,110 @@ export default function TrendingSlider({
   tab: string;
 }) {
   const genreMap = useGenres();
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) =>
-        prevIndex === movies.length - 1 ? 0 : prevIndex + 1
-      );
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [movies.length]);
+  const swiperRef = useRef<SwiperType>(null);
 
   if (!movies || movies.length === 0) return null;
 
-  const currentMovie = movies[currentIndex];
-
   return (
-    <div className="mt-6 relative h-0 md:pb-[45%] pb-[55%] tw-banner-slider">
-      <div className="absolute top-0 left-0 w-full h-full rounded-lg">
-        <Link
-          href={
-            currentMovie.media_type === "movie"
-              ? `/movie/${currentMovie.id}`
-              : `/tv/${currentMovie.id}`
+    <div className="mt-6 relative">
+      <style jsx>{`
+        .trending-swiper {
+          height: 45vh;
+          min-height: 300px;
+        }
+
+        .trending-swiper .swiper-pagination {
+          bottom: 20px;
+        }
+
+        .trending-swiper .swiper-pagination-bullet {
+          width: 12px;
+          height: 12px;
+          background: rgba(255, 255, 255, 0.5);
+          opacity: 1;
+          transition: all 0.3s ease;
+        }
+
+        .trending-swiper .swiper-pagination-bullet-active {
+          background: #a855f7;
+          transform: scale(1.2);
+        }
+
+        @media (max-width: 768px) {
+          .trending-swiper {
+            height: 55vh;
+            min-height: 250px;
           }
-          className="group block w-full h-full"
-        >
-          <Image
-            src={`https://image.tmdb.org/t/p/original${currentMovie.backdrop_path}`}
-            alt={currentMovie.title || currentMovie.name}
-            title={currentMovie.title || currentMovie.name}
-            width={1280}
-            height={600}
-            quality={100}
-            className="object-cover w-full h-full rounded-lg"
-          />
+        }
+      `}</style>
 
-          <div className="absolute top-0 left-0 w-full h-full rounded-lg pointer-events-none tw-black-backdrop group-hover:bg-[#00000026] transition duration-700"></div>
+      <Swiper
+        className="trending-swiper rounded-lg"
+        modules={[Autoplay, Pagination]}
+        spaceBetween={0}
+        slidesPerView={1}
+        autoplay={{
+          delay: 3000,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: true,
+        }}
+        pagination={{
+          clickable: true,
+          dynamicBullets: true,
+        }}
+        loop={movies.length > 1}
+        onSwiper={(swiper) => {
+          swiperRef.current = swiper;
+        }}
+      >
+        {movies.map((movie, index) => (
+          <SwiperSlide key={movie._id || index}>
+            <div className="relative w-full h-full">
+              <Link
+                href={`/movie/${movie.slug}`}
+                className="group block w-full h-full"
+              >
+                <Image
+                  src={`https://img.phimapi.com/${movie.thumb_url}`}
+                  alt={movie.name}
+                  title={movie.name}
+                  width={1280}
+                  height={600}
+                  quality={100}
+                  className="w-full h-full object-cover"
+                />
 
-          <div className="hidden md:flex absolute top-[5%] right-[3%] px-3 py-1 rounded-full text-white bg-gradient-to-tl from-indigo-500 to-fuchsia-500 items-center gap-1">
-            <span>{currentMovie.vote_average.toFixed(1)}</span>
-            <Star size={14} className="fill-white" />
-          </div>
+                <div className="absolute top-0 left-0 w-full h-full pointer-events-none tw-black-backdrop group-hover:bg-[#00000026] transition duration-700"></div>
 
-          <div className="tw-absolute-center w-16 h-16 rounded-full bg-gradient-to-br from-primary to-[#c353b4] tw-flex-center z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-700">
-            <PlayCircle size={35} className="text-white" />
-          </div>
+                <div className="hidden md:flex absolute top-[5%] right-[3%] px-3 py-1 rounded-full text-white bg-gradient-to-tl from-indigo-500 to-fuchsia-500 items-center gap-1">
+                  <span>{movie.tmdb.vote_average.toFixed(1)}</span>
+                  <Star size={14} className="fill-white" />
+                </div>
 
-          <div className="absolute top-1/2 -translate-y-1/2 left-[5%] md:max-w-md max-w-[200px]">
-            <h2 className="md:text-5xl text-xl text-white font-black tracking-wide md:tw-multiline-ellipsis-2 tw-multiline-ellipsis-3">
-              {currentMovie.title || currentMovie.name}
-            </h2>
-            <div className="flex gap-2 flex-wrap mt-3 text-sm text-white/90">
-              {currentMovie.genre_ids?.map((id) => (
-                <span
-                  key={id}
-                  className="px-2 py-0.5 bg-white/10 border border-white/20 rounded-full"
-                >
-                  {genreMap.get(id)}
-                </span>
-              ))}
+                <div className="tw-absolute-center w-16 h-16 rounded-full bg-gradient-to-br from-primary to-[#c353b4] tw-flex-center z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-700">
+                  <PlayCircle size={35} className="text-white" />
+                </div>
+
+                <div className="absolute top-1/2 -translate-y-1/2 left-[5%] md:max-w-md max-w-[200px]">
+                  <h2 className="md:text-5xl text-xl text-white font-black tracking-wide md:tw-multiline-ellipsis-2 tw-multiline-ellipsis-3">
+                    {movie.name}
+                  </h2>
+                  <div className="flex gap-2 flex-wrap mt-3 text-sm text-white/90">
+                    {movie.category?.map((category, idx) => (
+                      <span
+                        key={idx}
+                        className="px-2 py-0.5 bg-white/10 border border-white/20 rounded-full"
+                      >
+                        {category.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </Link>
             </div>
-            <div>
-              <p className="mt-1">
-                {currentMovie.release_date && `Release date: ${currentMovie.release_date}`}
-              </p>
-              <>
-                <div className="flex gap-2 flex-wrap mt-5"></div>
-                <p className=" mt-3 text-base tw-multiline-ellipsis-3">
-                  {currentMovie.overview}
-                </p>
-              </>
-            </div>
-          </div>
-        </Link>
-
-        {/* Navigation dots */}
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
-          {movies.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentIndex(index)}
-              className={`w-3 h-3 rounded-full transition-colors ${
-                index === currentIndex ? 'bg-white' : 'bg-white/50'
-              }`}
-            />
-          ))}
-        </div>
-      </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
     </div>
   );
 }

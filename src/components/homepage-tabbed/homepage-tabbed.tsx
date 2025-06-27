@@ -15,10 +15,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { MovieSection } from "../movie-section";
 import { Button } from "../ui/button";
+import { MovieSwiper } from "../movie-swiper";
+import { TrendingSlider } from "../trending-slider";
 
 export default function TabbedHomepage() {
   const [tab, setTab] = useState<MOVIE_TYPE>(MOVIE_TYPE.PHIM_BO);
-  
+
   // Helper function to get the appropriate fetch function based on tab
   const getFetchFunction = (tabType: MOVIE_TYPE) => {
     switch (tabType) {
@@ -42,8 +44,12 @@ export default function TabbedHomepage() {
   };
 
   // Use React Query for data fetching with caching
-  const { data: movies = [], isLoading: loading, error } = useQuery<Movie[]>({
-    queryKey: ['movies', tab],
+  const {
+    data: movies = [],
+    isLoading: loading,
+    error,
+  } = useQuery<Movie[]>({
+    queryKey: ["movies", tab],
     queryFn: () => getFetchFunction(tab)(),
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
@@ -104,6 +110,7 @@ export default function TabbedHomepage() {
         </Button>
       </div>
 
+      <TrendingSlider movies={movies} tab={tab} />
       <MovieSection
         movies={movies}
         title=""

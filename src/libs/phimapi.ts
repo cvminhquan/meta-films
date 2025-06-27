@@ -48,7 +48,7 @@ export const getMovieDetail = async (
   slug: string
 ): Promise<MovieDetail | null> => {
   try {
-    const response = await fetch(`https://phimapi.com/phim/${slug}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/phim/${slug}`, {
       next: {
         revalidate: 300 // Cache for 5 minutes
       },
@@ -120,7 +120,7 @@ export const searchPhimApiMovies = async ({
     if (country) params.country = country;
     if (year) params.year = year;
 
-    const response = await axios.get("https://phimapi.com/v1/api/tim-kiem", {
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/v1/api/tim-kiem`, {
       params,
     });
     return response.data.data?.items || [];
@@ -133,8 +133,8 @@ export const searchPhimApiMovies = async ({
 // Fetch list of countries from phimapi.com
 export const fetchCountries = async () => {
   try {
-    const response = await axios.get("https://phimapi.com/v1/api/quoc-gia");
-    return response.data.data || [];
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/quoc-gia`);
+    return response.data || [];
   } catch (error) {
     console.error("Error fetching countries from phimapi.com:", error);
     return [];
@@ -144,7 +144,7 @@ export const fetchCountries = async () => {
 // Fetch genres from phimapi.com (non-v1 endpoint)
 export const fetchGenresV0 = async () => {
   try {
-    const response = await axios.get("https://phimapi.com/the-loai");
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/the-loai`);
     return response.data || [];
   } catch (error) {
     console.error("Error fetching genres from phimapi.com (v0):", error);
@@ -155,7 +155,7 @@ export const fetchGenresV0 = async () => {
 // Fetch newly updated movies
 export const fetchNewlyUpdatedMovies = async (page: number = 1) => {
   try {
-    const response = await axios.get(`https://phimapi.com/danh-sach/phim-moi-cap-nhat`, {
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/danh-sach/phim-moi-cap-nhat`, {
       params: { page }
     });
     return response.data.items || [];

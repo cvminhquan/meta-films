@@ -107,7 +107,6 @@ export default async function MovieDetailPage({
                 </>
               )}
             </div>
-
           </div>
         </div>
       </div>
@@ -124,20 +123,19 @@ export default async function MovieDetailPage({
                   Danh sách tập ({episodes[0].server_data.length} tập)
                 </h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                  {episodes[0].server_data.map((episode: any, index: number) => (
-                    <Link
-                      key={episode.slug || index}
-                      href={`/movie/${id}/watch?episode=${episode.slug}`}
-                      className="group relative bg-gray-700 hover:bg-blue-600 transition-all duration-200 rounded-lg p-3 text-center"
-                    >
-                      <div className="text-white font-medium text-sm">
-                        {episode.name}
-                      </div>
-                      <div className="text-gray-400 text-xs mt-1 group-hover:text-white">
-                        {episode.filename}
-                      </div>
-                    </Link>
-                  ))}
+                  {episodes[0].server_data.map(
+                    (episode: any, index: number) => (
+                      <Link
+                        key={episode.slug || index}
+                        href={`/movie/${id}/watch?episode=${episode.slug}`}
+                        className="group relative bg-gray-700 hover:bg-purple-600 transition-all duration-200 rounded-lg p-3 text-center"
+                      >
+                        <div className="text-white font-medium text-sm">
+                          {episode.name}
+                        </div>
+                      </Link>
+                    )
+                  )}
                 </div>
               </div>
             )}
@@ -145,7 +143,9 @@ export default async function MovieDetailPage({
             {/* Movie Description */}
             {movieData.content && (
               <div className="bg-gray-800 rounded-lg p-6">
-                <h2 className="text-2xl font-bold text-white mb-4">Nội dung phim</h2>
+                <h2 className="text-2xl font-bold text-white mb-4">
+                  Nội dung phim
+                </h2>
                 <p className="text-gray-300 leading-relaxed">
                   {movieData.content}
                 </p>
@@ -157,7 +157,9 @@ export default async function MovieDetailPage({
           <div className="space-y-6">
             {/* Movie Info */}
             <div className="bg-gray-800 rounded-lg p-6">
-              <h3 className="text-xl font-bold text-white mb-4">Thông tin phim</h3>
+              <h3 className="text-xl font-bold text-white mb-4">
+                Thông tin phim
+              </h3>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-400">Tên gốc:</span>
@@ -190,19 +192,25 @@ export default async function MovieDetailPage({
                 {movieData.director && movieData.director.length > 0 && (
                   <div className="flex justify-between">
                     <span className="text-gray-400">Đạo diễn:</span>
-                    <span className="text-white">{movieData.director.join(', ')}</span>
+                    <span className="text-white">
+                      {movieData.director.join(", ")}
+                    </span>
                   </div>
                 )}
                 {movieData.actor && movieData.actor.length > 0 && (
                   <div className="flex justify-between">
                     <span className="text-gray-400">Diễn viên:</span>
-                    <span className="text-white">{movieData.actor.join(', ')}</span>
+                    <span className="text-white">
+                      {movieData.actor.join(", ")}
+                    </span>
                   </div>
                 )}
                 {movieData.country && movieData.country.length > 0 && (
                   <div className="flex justify-between">
                     <span className="text-gray-400">Quốc gia:</span>
-                    <span className="text-white">{movieData.country.map((c: any) => c.name).join(', ')}</span>
+                    <span className="text-white">
+                      {movieData.country.map((c: any) => c.name).join(", ")}
+                    </span>
                   </div>
                 )}
               </div>
@@ -225,8 +233,6 @@ export default async function MovieDetailPage({
                 </div>
               </div>
             )}
-
-
           </div>
         </div>
       </div>

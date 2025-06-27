@@ -1,10 +1,9 @@
 "use client";
 
 import FilmCard from "@/components/film-cards/FilmCard";
-import { useGenres } from "@/components/provider/genre-context/genre-context";
 import { Skeleton } from "@/components/ui/skeleton";
 import { movieClient } from "@/lib/api/client/movieClient.api";
-import { fetchCountries, fetchGenresV0 } from "@/libs/phimapi";
+import { fetchCountries } from "@/libs/phimapi";
 import { Movie } from "@/types/movie";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
@@ -39,8 +38,19 @@ export default function SearchContent() {
   const [activeTab, setActiveTab] = useState<"movie">("movie");
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [genres, setGenres] = useState<any[]>([]);
   const [countries, setCountries] = useState<any[]>([]);
+  const [genres, setGenres] = useState<any[]>([
+    { _id: "hanh-dong", name: "Hành Động" },
+    { _id: "vien-tuong", name: "Viễn Tưởng" },
+    { _id: "kinh-di", name: "Kinh Dị" },
+    { _id: "hai-huoc", name: "Hài Hước" },
+    { _id: "tinh-cam", name: "Tình Cảm" },
+    { _id: "phieu-luu", name: "Phiêu Lưu" },
+    { _id: "chien-tranh", name: "Chiến Tranh" },
+    { _id: "co-trang", name: "Cổ Trang" },
+    { _id: "gia-dinh", name: "Gia Đình" },
+    { _id: "hoat-hinh", name: "Hoạt Hình" }
+  ]);
   const [selectedGenre, setSelectedGenre] = useState<string>("");
   const [selectedCountry, setSelectedCountry] = useState<string>("");
   const [selectedYear, setSelectedYear] = useState<string>("");
@@ -48,12 +58,24 @@ export default function SearchContent() {
   const [sortType, setSortType] = useState<string>("desc");
   const [totalPages, setTotalPages] = useState(1);
 
-  const genreMap = useGenres();
-
   // Fetch genres and countries on mount
   useEffect(() => {
-    fetchGenresV0().then(setGenres);
     fetchCountries().then(setCountries);
+    // Use hardcoded genres for now
+    const hardcodedGenres = [
+      { _id: "hanh-dong", name: "Hành Động" },
+      { _id: "vien-tuong", name: "Viễn Tưởng" },
+      { _id: "kinh-di", name: "Kinh Dị" },
+      { _id: "hai-huoc", name: "Hài Hước" },
+      { _id: "tinh-cam", name: "Tình Cảm" },
+      { _id: "phieu-luu", name: "Phiêu Lưu" },
+      { _id: "chien-tranh", name: "Chiến Tranh" },
+      { _id: "co-trang", name: "Cổ Trang" },
+      { _id: "gia-dinh", name: "Gia Đình" },
+      { _id: "hoat-hinh", name: "Hoạt Hình" }
+    ];
+    setGenres(hardcodedGenres);
+    console.log("Hardcoded genres loaded:", hardcodedGenres);
   }, []);
 
   // Generate year options (1970 - current year)
@@ -88,7 +110,9 @@ export default function SearchContent() {
   });
 
   const filteredResults = Array.isArray(results) ? results : [];
-  console.log(filteredResults);
+  console.log("Search results:", filteredResults);
+  console.log("Genres:", genres);
+  console.log("Genres length:", genres.length);
 
   return (
     <div className="flex min-h-screen">
@@ -123,54 +147,165 @@ export default function SearchContent() {
         {query && (
           <div className="mt-10 px-6 md:px-12">
             {/* Filter Bar */}
-            <div className="flex flex-wrap gap-3 items-center px-6 md:px-12 mt-6">
-              <select
-                className="bg-dark-lighten text-white rounded px-3 py-2"
-                value={selectedGenre}
-                onChange={e => setSelectedGenre(e.target.value)}
-              >
-                <option value="">Thể loại</option>
-                {[...genreMap.entries()].map(([id, name]) => (
-                  <option key={id} value={id}>{name}</option>
-                ))}
-              </select>
-              <select
-                className="bg-dark-lighten text-white rounded px-3 py-2"
-                value={selectedCountry}
-                onChange={e => setSelectedCountry(e.target.value)}
-              >
-                <option value="">Quốc gia</option>
-                {countries.map((c) => (
-                  <option key={c.slug} value={c.slug}>{c.name}</option>
-                ))}
-              </select>
-              <select
-                className="bg-dark-lighten text-white rounded px-3 py-2"
-                value={selectedYear}
-                onChange={e => setSelectedYear(e.target.value)}
-              >
-                <option value="">Năm sản xuất</option>
-                {years.map((y) => (
-                  <option key={y} value={y}>{y}</option>
-                ))}
-              </select>
-              <select
-                className="bg-dark-lighten text-white rounded px-3 py-2"
-                value={sortField}
-                onChange={e => setSortField(e.target.value)}
-              >
-                <option value="_id">Mặc định</option>
-                <option value="modified.time">Cập nhật</option>
-                <option value="year">Năm phát hành</option>
-              </select>
-              <select
-                className="bg-dark-lighten text-white rounded px-3 py-2"
-                value={sortType}
-                onChange={e => setSortType(e.target.value)}
-              >
-                <option value="desc">Giảm dần</option>
-                <option value="asc">Tăng dần</option>
-              </select>
+            <div className="flex flex-wrap gap-4 items-center px-6 md:px-12 mt-6">
+              <style jsx>{`
+                .custom-select {
+                  position: relative;
+                  display: inline-block;
+                }
+                .custom-select select {
+                  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+                  color: white;
+                  border: 2px solid #374151;
+                  border-radius: 12px;
+                  padding: 12px 40px 12px 16px;
+                  font-size: 14px;
+                  font-weight: 600;
+                  cursor: pointer;
+                  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                  appearance: none;
+                  min-width: 140px;
+                  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+                  backdrop-filter: blur(10px);
+                }
+                .custom-select select:hover {
+                  border-color: #60a5fa;
+                  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(96, 165, 250, 0.2);
+                  transform: translateY(-2px);
+                  background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+                }
+                .custom-select select:focus {
+                  outline: none;
+                  border-color: #3b82f6;
+                  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15), 0 10px 25px -3px rgba(0, 0, 0, 0.3);
+                  transform: translateY(-2px);
+                }
+                .custom-select::after {
+                  content: '▼';
+                  position: absolute;
+                  top: 50%;
+                  right: 12px;
+                  transform: translateY(-50%);
+                  color: #9ca3af;
+                  font-size: 12px;
+                  pointer-events: none;
+                  transition: all 0.3s ease;
+                }
+                .custom-select:hover::after {
+                  color: #60a5fa;
+                  transform: translateY(-50%) scale(1.1);
+                }
+                .custom-select select option {
+                  background-color: #1f2937;
+                  color: white;
+                  padding: 12px 16px;
+                  border: none;
+                  font-weight: 500;
+                }
+                .custom-select.genre select:hover {
+                  border-color: #60a5fa;
+                  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(96, 165, 250, 0.3);
+                }
+                .custom-select.country select:hover {
+                  border-color: #34d399;
+                  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(52, 211, 153, 0.3);
+                }
+                .custom-select.year select:hover {
+                  border-color: #a78bfa;
+                  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(167, 139, 250, 0.3);
+                }
+                .custom-select.sort-field select:hover {
+                  border-color: #fb923c;
+                  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(251, 146, 60, 0.3);
+                }
+                .custom-select.sort-type select:hover {
+                  border-color: #f87171;
+                  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(248, 113, 113, 0.3);
+                }
+                .custom-select.genre select:focus {
+                  border-color: #3b82f6;
+                  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+                }
+                .custom-select.country select:focus {
+                  border-color: #10b981;
+                  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+                }
+                .custom-select.year select:focus {
+                  border-color: #8b5cf6;
+                  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+                }
+                .custom-select.sort-field select:focus {
+                  border-color: #f97316;
+                  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.15);
+                }
+                .custom-select.sort-type select:focus {
+                  border-color: #ef4444;
+                  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15);
+                }
+                @media (max-width: 768px) {
+                  .custom-select select {
+                    min-width: 120px;
+                    padding: 10px 32px 10px 12px;
+                    font-size: 13px;
+                  }
+                }
+              `}</style>
+              <div className="custom-select genre">
+                <select
+                  value={selectedGenre}
+                  onChange={e => setSelectedGenre(e.target.value)}
+                >
+                  <option value="">🎭 Thể loại</option>
+                  {genres.map((genre: any) => (
+                    <option key={`genre-${genre._id}`} value={genre._id}>{genre.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="custom-select country">
+                <select
+                  value={selectedCountry}
+                  onChange={e => setSelectedCountry(e.target.value)}
+                >
+                  <option value="">🌍 Quốc gia</option>
+                  {countries.map((c) => (
+                    <option key={c.slug} value={c.slug}>{c.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="custom-select year">
+                <select
+                  value={selectedYear}
+                  onChange={e => setSelectedYear(e.target.value)}
+                >
+                  <option value="">📅 Năm sản xuất</option>
+                  {years.map((y) => (
+                    <option key={y} value={y}>{y}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="custom-select sort-field">
+                <select
+                  value={sortField}
+                  onChange={e => setSortField(e.target.value)}
+                >
+                  <option value="_id">🔄 Mặc định</option>
+                  <option value="modified.time">🆕 Cập nhật</option>
+                  <option value="year">📆 Năm phát hành</option>
+                </select>
+              </div>
+
+              <div className="custom-select sort-type">
+                <select
+                  value={sortType}
+                  onChange={e => setSortType(e.target.value)}
+                >
+                  <option value="desc">⬇️ Giảm dần</option>
+                  <option value="asc">⬆️ Tăng dần</option>
+                </select>
+              </div>
             </div>
 
             {isLoading ? (
