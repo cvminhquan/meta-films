@@ -1,3 +1,4 @@
+import { searchPhimApiMovies } from "@/libs/phimapi";
 import api from "../../../libs/axios";
 
 const SENSITIVE_KEYWORDS = [
@@ -31,11 +32,8 @@ const filterSensitiveContent = (results: any[]) => {
 };
 
 export const movieClient = {
-  searchMovies: async (query: string) => {
-    const res = await api.get("/search/movie", {
-      params: { query, include_adult: false },
-    });
-    return filterSensitiveContent(res.data.results);
+  searchMovies: async (query: string, options: any = {}) => {
+    return await searchPhimApiMovies({ keyword: query, ...options });
   },
 
   searchTVShows: async (query: string) => {

@@ -1,4 +1,4 @@
-export type ParamsPageType = { locale: string; slug: string }
+export type ParamsPageType = { id: string }
 
 export type CustomTypeConfig<T> = Record<string, T>
 

@@ -1,8 +1,3 @@
-import {
-  NEXT_PUBLIC_API_URL_2,
-  NEXT_PUBLIC_DEFAULT_LANG,
-  NEXT_PUBLIC_DEFAULT_LOCATION,
-} from "@/constanst/env";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -69,7 +64,7 @@ export const customFetch = async <T>(
     const isAbsoluteUrl = endpoint.startsWith("http");
     const base = isAbsoluteUrl
       ? endpoint
-      : `${NEXT_PUBLIC_API_URL_2}/${endpoint}`;
+      : `${process.env.NEXT_PUBLIC_API_URL}/${endpoint}`;
     const cleanBase = base.replace(/\/+$/, "");
 
     let url = `${cleanBase}&${queryParams.toString()}`;

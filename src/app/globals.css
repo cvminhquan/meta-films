@@ -1,7 +1,5 @@
 @import "tailwindcss";
-@import 'swiper/css';
-@import 'swiper/css/navigation';
-@import 'swiper/css/pagination';
+@import "../styles/select-custom.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -78,16 +76,7 @@ body {
   /* padding: 20px; */
 }
 
-.swiper-button-prev, .swiper-button-next {
-  color: #fff;
 
-}
-.swiper-button-prev::after,
-.swiper-button-next::after{
-  width: 30px;
-  height: 30px;
-  font-size: 30px;
-}
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);

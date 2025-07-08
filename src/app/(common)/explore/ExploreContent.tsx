@@ -1,7 +1,7 @@
 "use client";
 
 import FilmCard from "@/components/film-cards/FilmCard";
-import { fetchExploreList } from "@/libs/phimapi";
+import { fetchNewlyUpdatedMovies } from "@/libs/phimapi";
 import { Movie } from "@/types/movie";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronDown } from "lucide-react";
@@ -30,31 +30,11 @@ export default function ExploreContent() {
   const [maxRuntime, setMaxRuntime] = useState(200);
   const [dateFrom, setDateFrom] = useState("2000-01-01");
   const [dateTo, setDateTo] = useState("2025-01-01");
-
-  // const genreMap = useGenres();
-  // console.log("genreMap", genreMap);
+  const [page, setPage] = useState(1);
 
   const { data: movies = [], isLoading } = useQuery<Movie[]>({
-    queryKey: [
-      "explore",
-      activeType,
-      sortParam,
-      selectedGenre,
-      minRuntime,
-      maxRuntime,
-      dateFrom,
-      dateTo,
-    ],
-    queryFn: () =>
-      fetchExploreList({
-        type: activeType,
-        sort: sortParam,
-        genre: selectedGenre,
-        minRuntime,
-        maxRuntime,
-        dateFrom,
-        dateTo,
-      }),
+    queryKey: ["explore", page],
+    queryFn: () => fetchNewlyUpdatedMovies(page),
   });
 
   return (
@@ -95,9 +75,27 @@ export default function ExploreContent() {
                     className="w-full aspect-[2/3] bg-gray-700 animate-pulse rounded"
                   />
                 ))
-              : movies.map((movie) => (
-                  <FilmCard key={movie.id} movie={movie} />
+              : movies.map((movie, index) => (
+                  <FilmCard key={index} movie={movie} type={movie.type as any} />
                 ))}
+          </div>
+          {/* Pagination */}
+          <div className="flex justify-center items-center gap-2 mt-8">
+            <button
+              className="px-3 py-1 rounded bg-dark-lighten text-white disabled:opacity-50"
+              onClick={() => setPage(page - 1)}
+              disabled={page === 1}
+            >
+              Trang trước
+            </button>
+            <span className="text-white">Trang {page}</span>
+            <button
+              className="px-3 py-1 rounded bg-dark-lighten text-white disabled:opacity-50"
+              onClick={() => setPage(page + 1)}
+              disabled={movies.length === 0}
+            >
+              Trang sau
+            </button>
           </div>
         </div>
 
@@ -111,9 +109,9 @@ export default function ExploreContent() {
             <div className="py-4 border-t border-dark-darken">
               <p className="text-white mb-2">Genres</p>
               <div className="flex flex-wrap gap-2">
-                {genres.map((genre) => (
+                {genres.map((genre, index) => (
                   <button
-                    key={genre}
+                    key={index}
                     onClick={() =>
                       setSelectedGenre((prev) =>
                         prev === genre ? undefined : genre

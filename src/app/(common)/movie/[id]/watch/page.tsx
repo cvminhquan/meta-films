@@ -1,24 +1,34 @@
-import { WatchPlayerWithServers } from "@/components/watch-player-with-servers/watch-player-with-servers";
+import ClientWatchWrapper from "@/components/client-wrapper/client-wrapper";
+import WatchLoading from "@/components/watch-loading/watch-loading";
 import { getMovieDetail } from "@/libs/phimapi";
+import { ParamsPageType } from "@/types/common";
+import { notFound } from "next/navigation";
+import { cache, Suspense } from "react";
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
+// Cache the movie detail function to avoid duplicate API calls
+const getCachedMovieDetail = cache(getMovieDetail);
 
-export default async function WatchTVPage({ params }: any) {
-  const parsedId = params.id;
-  
-  const tvDetail = await getMovieDetail(parsedId);
-  console.log("TV Detail:", tvDetail);
+export default async function WatchMoviePage({
+  params,
+}: {
+  params: Promise<ParamsPageType>;
+}) {
+  const { id } = await params;
+  const movieDetail = await getCachedMovieDetail(id);
+
+  if (!movieDetail) {
+    notFound();
+  }
+
   return (
     <div className="p-4 md:p-8">
-      {/* <h1 className="text-2xl font-bold text-white mb-4">
-        {tvDetail.name || tvDetail.original_title}
-      </h1> */}
+      <h1 className="text-2xl font-bold text-white mb-4">
+        {movieDetail?.movie?.name}
+      </h1>
 
-      <WatchPlayerWithServers id={parsedId} type="movie" />
+      <Suspense fallback={<WatchLoading />}>
+        <ClientWatchWrapper movie={movieDetail} />
+      </Suspense>
     </div>
   );
 }

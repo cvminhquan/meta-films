@@ -18,7 +18,7 @@ export function MovieListSection({ title }: { title: string }) {
     <>
       <div className="text-sm text-gray-300 line-clamp-1">{title}</div>
       <ul className="space-y-2">
-        {mockMovies.map((movie) => (
+        {/* {mockMovies.map((movie) => (
           <li
             key={movie.id}
             className="flex items-center justify-between gap-3 p-2 rounded-md hover:bg-white/10 transition"
@@ -31,7 +31,7 @@ export function MovieListSection({ title }: { title: string }) {
                   alt={movie.title}
                   width={100}
                   height={64}
-                  className=""
+                  className="w-full h-auto object-cover"
                 />
               </div>
               <div className="flex flex-col">
@@ -46,7 +46,8 @@ export function MovieListSection({ title }: { title: string }) {
               <MoreVertical className="w-4 h-4 text-gray-400 hover:text-white cursor-pointer" />
             </div>
           </li>
-        ))}
+        ))} */}
+        Coming soon
       </ul>
     </>
   );
