@@ -6,6 +6,7 @@ import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import MovieSwiper from "../movie-swiper/MovieSwiper";
 import { Button } from "../ui/button";
+import { searchPhimApiMovies } from "@/libs/phimapi";
 
 interface GenreSwiperProps {
   genre: {
@@ -25,7 +26,7 @@ const GenreSwiper: React.FC<GenreSwiperProps> = ({ genre, className = "" }) => {
           keyword: "",
           category: genre._id,
           country: "",
-          year: "",
+          year: undefined,
           sort_field: "modified.time",
           sort_type: "desc",
           page: 1,

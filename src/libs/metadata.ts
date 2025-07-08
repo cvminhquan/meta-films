@@ -1,11 +1,10 @@
 // src/libs/metadata.ts
-import { Metadata } from "next";
-import { 
-  NEXT_PUBLIC_SITE_NAME, 
-  NEXT_PUBLIC_SITE_URL, 
-  NEXT_PUBLIC_SITE_DESCRIPTION,
-  NEXT_PUBLIC_IMAGE_URL 
+import {
+    NEXT_PUBLIC_SITE_DESCRIPTION,
+    NEXT_PUBLIC_SITE_NAME,
+    NEXT_PUBLIC_SITE_URL
 } from "@/constanst/env";
+import { Metadata } from "next";
 
 // Default metadata configuration
 export const defaultMetadata: Metadata = {
@@ -143,9 +142,9 @@ export function generateMovieMetadata(movie: {
       images: [imageUrl],
     },
     other: {
-      "movie:release_date": movie.year ? `${movie.year}-01-01` : undefined,
-      "movie:genre": genres,
-      "movie:country": countries,
+      ...(movie.year && { "movie:release_date": `${movie.year}-01-01` }),
+      ...(genres && { "movie:genre": genres }),
+      ...(countries && { "movie:country": countries }),
     },
   };
 }

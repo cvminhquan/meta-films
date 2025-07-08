@@ -1,5 +1,6 @@
-// src/libs/error-handler.ts
+// src/libs/error-handler.tsx
 import { NEXT_PUBLIC_DEBUG_MODE } from "@/constanst/env";
+import React from "react";
 
 // Error types
 export enum ErrorType {
@@ -218,17 +219,17 @@ export const handleApiError = (error: any, context?: Record<string, any>): AppEr
   return errorHandler.handle(error, context);
 };
 
-export const handleAsyncError = async <T>(
+export async function handleAsyncError<T>(
   asyncFn: () => Promise<T>,
   context?: Record<string, any>
-): Promise<T | null> => {
+): Promise<T | null> {
   try {
     return await asyncFn();
   } catch (error) {
     errorHandler.handle(error as Error, context);
     return null;
   }
-};
+}
 
 // React error boundary helper
 export const withErrorBoundary = <P extends object>(

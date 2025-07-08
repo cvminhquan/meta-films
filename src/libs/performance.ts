@@ -61,7 +61,10 @@ export class PerformanceMonitor {
         const fidObserver = new PerformanceObserver((list) => {
           const entries = list.getEntries();
           entries.forEach((entry) => {
-            console.log("⚡ FID:", entry.processingStart - entry.startTime + "ms");
+            const eventEntry = entry as any; // PerformanceEventTiming
+            if (eventEntry.processingStart && eventEntry.startTime) {
+              console.log("⚡ FID:", (eventEntry.processingStart - eventEntry.startTime).toFixed(2) + "ms");
+            }
           });
         });
         fidObserver.observe({ entryTypes: ["first-input"] });
@@ -77,12 +80,12 @@ export class PerformanceMonitor {
     const metrics = {
       "DNS Lookup": entry.domainLookupEnd - entry.domainLookupStart,
       "TCP Connection": entry.connectEnd - entry.connectStart,
-      "TLS Handshake": entry.connectEnd - entry.secureConnectionStart,
+      "TLS Handshake": entry.secureConnectionStart ? entry.connectEnd - entry.secureConnectionStart : 0,
       "Request": entry.responseStart - entry.requestStart,
       "Response": entry.responseEnd - entry.responseStart,
-      "DOM Processing": entry.domComplete - entry.domLoading,
+      "DOM Processing": entry.domComplete - entry.domContentLoadedEventStart,
       "Load Complete": entry.loadEventEnd - entry.loadEventStart,
-      "Total": entry.loadEventEnd - entry.navigationStart,
+      "Total": entry.loadEventEnd - entry.fetchStart,
     };
 
     console.group("🚀 Navigation Performance");
@@ -176,7 +179,10 @@ export class PerformanceMonitor {
       new PerformanceObserver((list) => {
         const entries = list.getEntries();
         entries.forEach((entry) => {
-          vitals.fid = entry.processingStart - entry.startTime;
+          const eventEntry = entry as any; // PerformanceEventTiming
+          if (eventEntry.processingStart && eventEntry.startTime) {
+            vitals.fid = eventEntry.processingStart - eventEntry.startTime;
+          }
         });
         checkResolve();
       }).observe({ entryTypes: ["first-input"] });
